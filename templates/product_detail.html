@@ -1,0 +1,281 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} - AURA Apparel{% endblock %}
+
+<!-- ADD THIS NEW BLOCK -->
+{% block meta_description %}
+<meta name="description" content="{{ product.description }} | Shop for {{ product.name }} and other sustainable menswear at AURA Apparel.">
+{% endblock %}
+
+{% block content %}
+<div class="container page-content-detail">
+
+    <!-- ====================================================== -->
+    <!--         DEFINITIVE FINAL EDITORIAL GRID LAYOUT         -->
+    <!-- ====================================================== -->
+    <div class="product-detail-layout-editorial">
+        
+        <!-- The Image Grid Column (now the first column) -->
+        <div class="product-image-grid">
+            <!-- For now, we hardcode the images for product #35. A real system would use a more dynamic method. -->
+            {% if product.id == 35 %}
+                <img src="{{ url_for('static', filename='images/products/35_main.png') }}" alt="Main view of {{ product.name }}" class="img-main">
+                <img src="{{ url_for('static', filename='images/products/35_lifestyle.png') }}" alt="Lifestyle view of {{ product.name }}" class="img-lifestyle">
+                <img src="{{ url_for('static', filename='images/products/35_detail.png') }}" alt="Detail view of {{ product.name }}" class="img-detail">
+            {% else %}
+                <!-- Fallback for other products with only one image -->
+                <img src="{{ url_for('static', filename='images/products/' + product.image_url) }}" alt="Image of {{ product.name }}" class="img-main-fallback">
+            {% endif %}
+        </div>
+
+        <!-- The Info Column -->
+        <div class="product-detail-info">
+            <h1>{{ product.name }}</h1>
+            <p class="product-detail-brand">By {{ product.brand }}</p>
+
+            {% if product.rating and product.num_ratings > 0 %}
+            <div class="detailed-rating-box">
+                <strong>{{ "%.1f"|format(product.rating) }}</strong>
+                
+                <!-- THIS IS THE KEY FIX: The icon now has a conditional class -->
+                {% if product.rating >= 4.0 %}
+                    <i class="ph-fill ph-star rating-good"></i>
+                {% elif product.rating >= 3.0 %}
+                    <i class="ph-fill ph-star rating-average"></i>
+                {% else %}
+                    <i class="ph-fill ph-star rating-bad"></i>
+                {% endif %}
+                
+                <div class="rating-divider"></div>
+                <span>{{ product.num_ratings | k_format }} Ratings</span>
+            </div>
+            {% endif %}
+
+            <div class="price-box-detail">
+                <span class="sale-price">₹{{ "%.0f"|format(product.sale_price) }}</span>
+                {% if product.discount_percent > 0 %}
+                <div class="original-price-row">
+                    <span class="original-price">₹{{ "%.0f"|format(product.original_price) }}</span>
+                    <span class="discount-badge">({{ product.discount_percent }}% OFF)</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="product-long-description">
+                <h3>About This Item</h3>
+                <p>{{ product.long_description }}</p>
+            </div>
+
+            <!-- === NEW: SIZE SELECTION UI === -->
+            <div class="size-selection">
+                <h4>Select Size</h4>
+                <div class="size-options" id="size-selector">
+                    {% for item in inventory %}
+                        <button 
+                            class="size-btn {% if item.stock_quantity == 0 %}out-of-stock{% endif %}"
+                            data-inventory-id="{{ item.id }}"
+                            {% if item.stock_quantity == 0 %}disabled{% endif %}>
+                            {{ item.size }}
+                        </button>
+                    {% endfor %}
+                </div>
+                <span id="size-error" class="text-danger" style="display: none;">Please select a size.</span>
+            </div>
+            <!-- === END OF NEW SECTION === -->
+
+            <div class="product-actions">
+                {% if is_in_cart %}
+                    <a href="{{ url_for('view_cart') }}" class="btn btn-success btn-large">Go to Cart</a>
+                {% else %}
+                    <!-- MODIFIED: The Add to Cart form -->
+                    <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="POST" id="add-to-cart-form">
+                        <input type="hidden" name="inventory_id" id="selected-inventory-id" value="">
+                        <div class="form-group-inline">
+                            <label for="quantity">Quantity:</label>
+                            <input type="number" id="quantity" name="quantity" value="1" min="1" max="10">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-large">Add to Cart</button>
+                    </form>
+                {% endif %}
+                {% if is_in_wishlist %}
+                    <!-- If the item is already in the wishlist, show a direct link -->
+                    <a href="{{ url_for('wishlist') }}" class="btn-wishlist in-wishlist" title="Go to Wishlist">
+                        <i class="ph-bold ph-heart-fill"></i>
+                        <span>In Wishlist</span>
+                    </a>
+                {% else %}
+                    <!-- Otherwise, show the form to add the item -->
+                    <form action="{{ url_for('add_to_wishlist', product_id=product.id) }}" method="POST" class="wishlist-form">
+                        <button type="submit" class="btn-wishlist" title="Add to Wishlist">
+                            <i class="ph-bold ph-heart"></i>
+                            <span>Add to Wishlist</span>
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ====================================================== -->
+    <!-- THIS IS THE COMPLETE AND CORRECT USER REVIEWS SECTION  -->
+    <!-- ====================================================== -->
+    <div class="reviews-section">
+        <div class="reviews-header">
+            <h2>Customer Reviews</h2>
+            
+            <!-- THIS IS THE NEW, UPGRADED DROPDOWN -->
+            <div class="sort-reviews-form">
+                <span class="sort-label">Sort by:</span>
+                <div class="dropdown">
+                    <button class="btn btn-light dropdown-toggle" type="button" id="reviewSortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        {% if sort_by == 'oldest' %}Oldest
+                        {% elif sort_by == 'highest' %}Highest Rating
+                        {% elif sort_by == 'lowest' %}Lowest Rating
+                        {% else %}Newest{% endif %}
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="reviewSortDropdown">
+                        <li><a class="dropdown-item" href="{{ url_for('product_detail', product_id=product.id, sort_reviews='newest') }}">Newest</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('product_detail', product_id=product.id, sort_reviews='oldest') }}">Oldest</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('product_detail', product_id=product.id, sort_reviews='highest') }}">Highest Rating</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('product_detail', product_id=product.id, sort_reviews='lowest') }}">Lowest Rating</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div id="reviews-list">
+            {% if reviews %}
+                {% for review in reviews %}
+                <div class="review-card">
+                    <div class="review-header">
+                        <strong>{{ review.username }}</strong>
+                        <div class="review-rating">
+                            {% if review.rating >= 4 %}<span class="review-rating-good">
+                            {% elif review.rating >= 3 %}<span class="review-rating-average">
+                            {% else %}<span class="review-rating-bad">
+                            {% endif %}
+                                {{ review.rating }} ★
+                            </span>
+                        </div>
+                    </div>
+                    <p class="review-comment">"{{ review.comment }}"</p>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-reviews" style="text-align: center; padding: 40px 0;">
+                    <p>No reviews yet for this product. Be the first to leave one!</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        {% if reviews|length >= 4 %}
+        <div class="load-more-container">
+            <button id="load-more-reviews" 
+                    data-product-id="{{ product.id }}" 
+                    data-next-page="2"
+                    data-sort="{{ sort_by }}"
+                    class="btn btn-secondary">Load More Reviews</button>
+        </div>
+        {% endif %}
+    </div> <!-- This closes the .page-content-detail container -->
+    <!-- ============================================== -->
+    <!--        SEO Structured Data (JSON-LD)           -->
+    <!-- ============================================== -->
+    <script type="application/ld+json">
+    {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": "{{ product.name }}",
+    "image": [
+        "{{ request.url_root[:-1] }}{{ product.image_url }}"
+    ],
+    "description": "{{ product.description }}",
+    "sku": "AURA-{{ product.id }}",
+    "brand": {
+        "@type": "Brand",
+        "name": "{{ product.brand }}"
+    },
+    {% if reviews %}
+    "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "{{ product.rating }}",
+        "reviewCount": "{{ product.num_ratings }}"
+    },
+    "review": [
+        {% for review in reviews %}
+        {
+        "@type": "Review",
+        "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": "{{ review.rating }}"
+        },
+        "author": {
+            "@type": "Person",
+            "name": "{{ review.username }}"
+        }
+        }{{ "," if not loop.last }}
+        {% endfor %}
+    ],
+    {% endif %}
+    "offers": {
+        "@type": "Offer",
+        "url": "{{ request.url }}",
+        "priceCurrency": "INR",
+        "price": "{{ '%.2f'|format(product.sale_price) }}",
+        "availability": "https://schema.org/InStock"
+    }
+    }
+    </script>
+
+    <!-- NEW "YOU MIGHT ALSO LIKE" SECTION -->
+
+    {% if recommended_products %}
+    <section class="recommended-products">
+        <div class="container">
+            <h2 class="section-title">You Might Also Like</h2>
+                <div class="product-grid">
+                {% for rec_product in recommended_products %}
+                <!-- THIS IS THE FIX: Wrap the card in the link tag -->
+                <a href="{{ url_for('product_detail', product_id=rec_product.id) }}" class="product-card-link">
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="{{ url_for('static', filename='images/products/' + rec_product.image_url) }}" alt="{{ rec_product.name }}" class="product-thumb">
+                            {% if rec_product.rating and rec_product.num_ratings > 0 %}
+                            <div class="rating-overlay">
+                                <span>{{ "%.1f"|format(rec_product.rating) }}</span>
+                                <!-- THE KEY FIX: The color class is now on the icon -->
+                                {% if rec_product.rating >= 4.0 %}<i class="ph-fill ph-star rating-good"></i>
+                                {% elif rec_product.rating >= 3.0 %}<i class="ph-fill ph-star rating-average"></i>
+                                {% else %}<i class="ph-fill ph-star rating-bad"></i>
+                                {% endif %}
+                                <span>| {{ rec_product.num_ratings }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-brand">{{ rec_product.brand }}</h3>
+                            <p class="product-name">{{ rec_product.name }}</p>
+                            <div class="price-box">
+                                <span class="sale-price">₹{{ "%.0f"|format(rec_product.sale_price) }}</span>
+                                {% if rec_product.discount_percent > 0 %}
+                                <span class="original-price">₹{{ "%.0f"|format(rec_product.original_price) }}</span>
+                                <span class="discount-badge">({{ rec_product.discount_percent }}% OFF)</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+</div>
+<!-- ============================================== -->
+<!--           END OF NEW SECTION                   -->
+<!-- ============================================== -->
+
+<script src="{{ url_for('static', filename='js/product_detail.js') }}"></script>
+<script src="{{ url_for('static', filename='js/reviews.js') }}"></script>
+{% endblock %}

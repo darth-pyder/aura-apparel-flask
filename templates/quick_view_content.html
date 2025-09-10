@@ -1,0 +1,21 @@
+<!-- templates/quick_view_content.html -->
+<div class="product-detail-layout quick-view-layout">
+    <div class="product-detail-image">
+        <img src="{{ url_for('static', filename='images/products/' + product.image_url) }}" alt="{{ product.name }}">
+    </div>
+    <div class="product-detail-info">
+        <h1>{{ product.name }}</h1>
+        <p class="product-detail-brand">By {{ product.brand }}</p>
+        <div class="price-box-detail">
+            <span class="sale-price">₹{{ "%.0f"|format(product.sale_price) }}</span>
+            {% if product.discount_percent > 0 %}
+            <div class="original-price-row">
+                <span class="original-price">₹{{ "%.0f"|format(product.original_price) }}</span>
+                <span class="discount-badge">({{ product.discount_percent }}% OFF)</span>
+            </div>
+            {% endif %}
+        </div>
+        <p>{{ product.description }}</p>
+        <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-primary">View Full Details</a>
+    </div>
+</div>

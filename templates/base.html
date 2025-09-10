@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Aura Apparel - AI-Powered Fashion{% endblock %}</title>
+    <!-- Add a meta description tag below the title -->
+    {% block meta_description %}
+    <meta name="description" content="Shop sustainably-sourced and stylish menswear at AURA Apparel. Discover our collection of organic cotton tees, recycled denim, and modern essentials.">
+    {% endblock %}
+    <meta name="keywords" content="menswear, sustainable fashion, ethical clothing, organic cotton, Aura Apparel">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <!-- THIS LINE IS CRITICAL FOR ICONS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- BOOTSTRAP CSS -->
+    <!-- SWIPER.JS CSS  -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <!-- MODIFIED: Added a span for the text and the close button -->
+                    <div class="flash {{ category }}">
+                        <span>{{ message }}</span>
+                        <button class="flash-close">&times;</button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!--      DEFINITIVE FINAL HEADER (BUGFIXED)                -->
+    <!-- ====================================================== -->
+    <header class="main-header">
+        <div class="header-container">
+            <!-- Group 1: Left (Logo) -->
+            <div class="header-group header-left">
+                <a href="/" class="header-logo">AURA</a>
+            </div>
+
+            <!-- Group 2: Center (Navigation) -->
+            <nav class="header-group header-nav">
+                <!-- <ul>
+                    <li><a href="{{ url_for('product_listing', category='Tops') }}">Tops</a></li>
+                    <li><a href="{{ url_for('product_listing', category='Bottoms') }}">Bottoms</a></li>
+                    <li><a href="{{ url_for('product_listing', category='Outerwear') }}">Outerwear</a></li>
+                    <li><a href="{{ url_for('product_listing', category='Activewear') }}">Activewear</a></li>
+                    <li><a href="{{ url_for('product_listing') }}">All Products</a></li>
+                </ul> -->
+
+                <ul>
+                        <!-- THIS IS THE NEW, CORRECTED NAVIGATION -->
+                        <li>
+                            <a href="{{ url_for('product_listing', category='Tops') }}" 
+                               class="{{ 'active' if active_filters and active_filters.category == 'Tops' else '' }}">Tops</a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('product_listing', category='Bottoms') }}" 
+                               class="{{ 'active' if active_filters and active_filters.category == 'Bottoms' else '' }}">Bottoms</a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('product_listing', category='Outerwear') }}" 
+                               class="{{ 'active' if active_filters and active_filters.category == 'Outerwear' else '' }}">Outerwear</a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('product_listing', category='Activewear') }}" 
+                               class="{{ 'active' if active_filters and active_filters.category == 'Activewear' else '' }}">Activewear</a>
+                        </li>
+                        <li>
+                            <!-- This is active if NO category is selected -->
+                            <a href="{{ url_for('product_listing') }}" 
+                               class="{{ 'active' if active_filters and not active_filters.category else '' }}">All Products</a>
+                        </li>
+                    </ul>
+            </nav>
+
+            <!-- Group 3: Right (Icons) -->
+            <div class="header-group header-right">
+                <button id="search-panel-trigger" class="icon-btn" title="Search">
+                    <i class="ph ph-magnifying-glass icon-search"></i>
+                    <i class="ph ph-x icon-close"></i>
+                </button>
+                <a href="{{ url_for('wishlist') }}" class="icon-btn" title="Wishlist"><i class="ph ph-heart"></i></a>
+                {% if current_user.is_authenticated %}
+                    <div class="header-dropdown">
+                        <a href="{{ url_for('account') }}" class="icon-btn" title="My Account"><i class="ph ph-user"></i></a>
+                        <div class="dropdown-content">
+                            <a href="{{ url_for('account') }}">My Account</a>
+                            <a href="{{ url_for('my_orders') }}">My Orders</a>
+                            <a href="{{ url_for('logout') }}">Logout</a>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="icon-btn" title="Sign In"><i class="ph ph-user"></i></a>
+                {% endif %}
+                <a href="{{ url_for('view_cart') }}" class="icon-btn cart-icon-link" title="Bag">
+                    <i class="ph ph-shopping-bag-open"></i>
+                    {% if cart_item_count > 0 %}<span class="cart-count-badge">{{ cart_item_count }}</span>{% endif %}
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- DEFINITIVE FINAL SEARCH PANEL -->
+    <div id="search-panel" class="search-panel">
+        <div class="container search-panel-content">
+            <form action="{{ url_for('product_listing') }}" method="GET" class="search-panel-form">
+                <i class="ph ph-magnifying-glass"></i>
+                <input type="search" name="q" id="panel-search-input" placeholder="Search" autocomplete="off">
+            </form>
+            <div id="panel-search-results" class="panel-search-results">
+                <!-- Live results will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    
+    
+
+    <!-- NEW & REDESIGNED Chatbot Widget -->
+    <div id="chat-widget-container">
+        <div id="chat-widget" class="chat-widget">
+            <!-- New Header -->
+            <div class="chat-header">
+                <div class="header-info">
+                    <span class="online-indicator"></span>
+                    <div class="header-text">
+                        <h3>Aura Assistant</h3>
+                        <p>We're online</p>
+                    </div>
+                </div>
+                <button id="chat-minimize-button" class="chat-minimize-button" title="Minimize">
+                    <i class="ph-bold ph-caret-down"></i>
+                </button>
+            </div>
+            
+            <!-- Messages Area -->
+            <ul id="chat-messages" class="chat-messages">
+                <!-- Chat messages will be added here by JavaScript -->
+            </ul>
+            
+            <!-- New Suggested Replies Area -->
+            <div id="suggested-replies" class="suggested-replies">
+                <button class="suggestion-chip">What are your bestsellers?</button>
+                <button class="suggestion-chip">What's your return policy?</button>
+                <button class="suggestion-chip">Tell me about your jeans</button>
+            </div>
+
+            <!-- New Input Area -->
+            <form id="chat-form" class="chat-form">
+                <input type="text" id="chat-input" placeholder="Type a message..." autocomplete="off">
+                <button type="submit" id="chat-send-button" title="Send">
+                    <i class="ph-bold ph-paper-plane-right"></i>
+                </button>
+            </form>
+        </div>
+        <button id="chat-toggle-button" class="chat-toggle-button" title="Open Chat">
+            <i class="ph-bold ph-chats"></i>
+        </button>
+    </div>
+    <!-- END: Chatbot Widget -->
+    
+    </main>
+
+    <!-- NEW: Quick View Modal Structure -->
+    <div class="modal fade" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="quickViewModalLabel">Quick View</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="quickViewModalBody">
+            <!-- Product content will be loaded here by JavaScript -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="container footer-container padding0">
+            <!-- Column 1: Shop -->
+            <div class="footer-column">
+                <h5>SHOP</h5>
+                <ul>
+                    <li><a href="{{ url_for('product_listing', category='Tops') }}">Tops</a></li>
+                    <li><a href="{{ url_for('product_listing', category='Bottoms') }}">Bottoms</a></li>
+                    <li><a href="{{ url_for('product_listing', category='Outerwear') }}">Outerwear</a></li>
+                    <li><a href="{{ url_for('product_listing', category='Activewear') }}">Activewear</a></li>
+                </ul>
+            </div>
+            <!-- Column 2: Help -->
+            <div class="footer-column">
+                <h5>HELP</h5>
+                <ul>
+                    <li><a href="{{ url_for('contact') }}">Contact Us</a></li>
+                    <li><a href="{{ url_for('return_policy') }}">Return Policy</a></li>
+                    <li><a href="{{ url_for('track_order') }}">Track Your Order</a></li>
+                    <li><a href="{{ url_for('faq') }}">FAQs</a></li>
+                </ul>
+            </div>
+            <!-- Column 3: About Aura -->
+            <div class="footer-column">
+                <h5>ABOUT AURA</h5>
+                <ul>
+                    <li><a href="{{ url_for('about') }}">Our Story</a></li>
+                    <li><a href="{{ url_for('privacy_policy') }}">Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p class="margin0">© 2025 Aura Apparel. All Rights Reserved. Powered by AI.</p>
+        </div>
+    </footer>
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

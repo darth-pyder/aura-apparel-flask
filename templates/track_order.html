@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Track Your Order - AURA Apparel{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>Track Your Order</h1>
+        <p>Enter your Order ID to see the status of your shipment.</p>
+    </div>
+</div>
+
+<div class="container page-content" style="flex-direction: column; align-items: center;">
+    <!-- Tracking Form -->
+    <form action="{{ url_for('track_order') }}" method="POST" class="track-order-form">
+        <div class="form-group">
+            <label for="order_id">Order ID</label>
+            <input type="text" id="order_id" name="order_id" placeholder="e.g., 1" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-large">Track</button>
+    </form>
+
+    <!-- Tracking Results -->
+    {% if order_details %}
+    <div class="track-results">
+        <h3>Order Status</h3>
+        <p><strong>Order ID:</strong> #{{ order_details.id }}</p>
+        <p><strong>Order Date:</strong> {{ order_details.order_date }}</p>
+        <p><strong>Status:</strong> <span class="shipping-status">{{ order_details.shipping_status }}</span></p>
+        {% if order_details.shipping_status == 'Shipped' %}
+            <p><strong>Tracking Number:</strong> {{ order_details.tracking_number }}</p>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

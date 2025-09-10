@@ -1,0 +1,88 @@
+<!-- --- START OF NEW FILE: templates/account_addresses.html --- -->
+
+{% extends "account_layout.html" %}
+
+{% block title %}Address Book - AURA Apparel{% endblock %}
+{% block account_title %}Address Book{% endblock %}
+
+{% block account_content %}
+    <div class="address-header">
+        <p>Manage your saved shipping addresses for a faster checkout experience.</p>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAddressModal">Add New Address</button>
+    </div>
+
+    <div class="address-grid">
+        {% if addresses %}
+            {% for address in addresses %}
+            <div class="address-card">
+                <div class="address-card-body">
+                    <p>
+                        {{ address.address }}<br>
+                        {{ address.city }}, {{ address.state }} {{ address.zip_code }}
+                    </p>
+                    {% if address.is_default %}
+                        <span class="default-badge">Default</span>
+                    {% endif %}
+                </div>
+                <div class="address-card-footer">
+                    {% if not address.is_default %}
+                    <form action="{{ url_for('account_addresses') }}" method="POST">
+                        <input type="hidden" name="action" value="set_default">
+                        <input type="hidden" name="address_id" value="{{ address.id }}">
+                        <button type="submit" class="btn-link">Set as Default</button>
+                    </form>
+                    {% endif %}
+                    <form action="{{ url_for('account_addresses') }}" method="POST">
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="address_id" value="{{ address.id }}">
+                        <button type="submit" class="btn-link-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>You have no saved addresses.</p>
+        {% endif %}
+    </div>
+
+<!-- Modal for Adding a New Address (same as before) -->
+<div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addAddressModalLabel">Add New Address</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="{{ url_for('account_addresses') }}" method="POST">
+          <div class="modal-body">
+                <input type="hidden" name="action" value="add">
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" id="address" name="address" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" id="city" name="city" class="form-control" required>
+                </div>
+                 <div class="form-row">
+                    <div class="form-group">
+                        <label for="state">State</label>
+                        <input type="text" id="state" name="state" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="zip_code">Zip Code</label>
+                        <input type="text" id="zip_code" name="zip_code" class="form-control" required>
+                    </div>
+                </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save Address</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+<!-- --- END OF NEW FILE: templates/account_addresses.html --- -->

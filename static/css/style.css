@@ -1,0 +1,3585 @@
+/* --- Definitive Final Typography System --- */
+
+/* 1. Base Font for the Entire Website */
+body {
+    font-family: 'Poppins', sans-serif; /* The clean, sans-serif font for all text */
+    font-weight: 400; /* Normal weight */
+    font-size: 16px; /* A comfortable base size */
+    line-height: 1.7;
+    color: #333;
+    margin: 0;
+    background-color: #fff;
+}
+
+/* 2. Heading Font for All Headings */
+/* This rule targets all headings to give them the elegant, serif font */
+h1, h2, h3, h4, h5,
+.header-logo,
+.hero-headline,
+.collection-title,
+.pillar-content h3 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700; /* Bold for impact */
+    color: #282c3f;
+}
+
+/* 3. Ensure form elements inherit the correct font */
+input, button, textarea, select {
+    font-family: inherit; /* Forces form inputs to use 'Poppins' */
+}
+
+/* --- Universal Box Sizing & Container --- */
+html { box-sizing: border-box; }
+*, *:before, *:after { box-sizing: inherit; }
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+
+/* --- User Actions (Definitive Final Alignment v2) --- */
+.header-user-actions {
+    display: flex;
+    align-items: center; /* This is the only rule this container needs */
+    gap: 1.5rem;
+}
+
+/* This targets the icon links (Profile, Bag) */
+.header-action-link {
+    text-decoration: none;
+    color: #282c3f;
+    position: relative;
+    /* We add a specific line-height to help with alignment */
+    line-height: 1; 
+}
+.header-action-link i { 
+    font-size: 1.8rem; /* A slightly larger, more prominent icon size */
+    vertical-align: middle; /* Aligns icons with text-based elements */
+}
+
+/* This targets ONLY the Sign In button */
+.btn-primary-inverted {
+    background-color: transparent;
+    color: #007bff;
+    border: 2px solid #007bff;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    
+}
+.btn-primary-inverted:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+/*
+   THIS IS THE HYPER-SPECIFIC, OVERRIDE-EVERYTHING RULE
+   FOR THE SMALL SIGN-IN BUTTON. THIS IS THE KEY FIX.
+*/
+.header-right .header-user-actions .btn-primary-inverted {
+    padding: 5px 12px !important;      /* Force smaller padding */
+    font-size: 0.8rem !important;      /* Force smaller font */
+    font-weight: 600 !important;
+    border-width: 2px !important;
+    border-radius: 6px !important;
+    background-color: transparent;
+    color: #007bff;
+    border-color: #007bff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+.header-right .header-user-actions .btn-primary-inverted:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+/* --- MAIN HEADER (DEFINITIVE FINAL MINIMALIST VERSION) --- */
+.main-header {
+    background-color: #fff;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 0 3.5rem; /* Increased padding */
+    height: 80px;
+    /* position: sticky; */
+    z-index: 1020;
+}
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    max-width: 100%; /* Allow it to be full width */
+}
+.header-group {
+    display: flex;
+    align-items: center;
+}
+.header-left {
+    flex: 1 0 auto; /* Allow it to take up space but not shrink */
+}
+.header-nav {
+    flex: 1 1 auto; /* Allow it to grow and shrink */
+    justify-content: center;
+}
+.header-right {
+    flex: 1 0 auto;
+    justify-content: flex-end;
+    gap: 1.8rem;
+}
+
+.header-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1c1c1c;
+    text-decoration: none;
+    letter-spacing: 1px;
+}
+.header-nav ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 2.5rem;
+}
+.header-nav ul li a {
+    text-decoration: none;
+    color: #1c1c1c;
+    font-weight: 500; /* Lighter weight */
+    font-size: 1rem; /* Increased size */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.header-nav ul li a.active, .header-nav ul li a:hover {
+    color: #080808; /* The red color you wanted */
+    position: relative;
+    font-weight: 700;
+}
+
+.header-nav ul li a.active::after, .header-nav ul li a:hover::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    stroke: none;
+    
+
+}
+
+/* --- THIS IS THE KEY ICON FIX --- */
+.icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    color: #1c1c1c;
+    text-decoration: none !important; /* Force no underline */
+}
+.icon-btn i {
+    font-size: 1.6rem;
+    vertical-align: middle;
+}
+/* --- END OF ICON FIX --- */
+
+.icon-close { display: none; }
+.icon-btn.is-active .icon-close { display: block; margin-top: 2px;}
+.icon-btn.is-active .icon-search { display: none; }
+.cart-icon-link { position: relative; }
+.cart-count-badge {
+    position: absolute;
+    top: -2px;
+    right: -5px;
+    background-color: #ff3f6c;
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+.search-panel {
+    position: absolute;
+    top: 81px;
+    left: 0;
+    right: 0;
+    width: 70%;
+    background-color: #fff;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    z-index: 1010;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+    margin: auto;
+}
+.search-panel.open { opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto; }
+.search-panel-content { padding: 20px 0px 20px 0px; max-width: 1000px; margin:0 0 0 0; }
+.search-panel-form { display: flex; align-items: center; border-bottom: 2px solid #1c1c1c; max-width: 800px; margin: 0 auto; }
+.search-panel-form i { font-size: 1.5rem; color: #555; }
+#panel-search-input { flex-grow: 1; border: none; background: transparent; outline: none; font-size:22px ; font-weight: 300; padding-left: 15px; font-family: serif; }
+.panel-search-results { max-width: 800px; margin: 30px auto 0 auto; }
+
+/* Header Dropdown Menu */
+
+.header-dropdown {
+    position: relative;
+    display: inline-block;
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    z-index: 100;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    border-radius: 8px;
+    padding: 10px 0;
+    border: 1px solid #e0e0e0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.dropdown-content a {
+    color: #282c3f;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+.dropdown-content a:hover {
+    background-color: #e0e0e0;
+}
+.header-dropdown:hover .dropdown-content {
+    display: block;
+}   
+
+/* --- Immersive Video Hero Section (Definitive Final Version) --- */
+.hero {
+    position: relative; /* This is the anchor for the video and overlay */
+    height: 85vh; /* Takes up 85% of the viewport height */
+    width: 100%;
+    display: flex; /* Use flexbox to center the content */
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Prevents any video overflow */
+    color: #fff;
+}
+
+#hero-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* This perfectly centers the video */
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: 1; /* Sits at the very back */
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* A slightly darker overlay for better contrast */
+    z-index: 2; /* Sits on top of the video */
+}
+
+.hero-container-new {
+    position: relative;
+    z-index: 3; /* Sits on top of the overlay */
+    text-align: center;
+}
+
+/* --- THIS IS THE KEY FIX FOR THE HERO TEXT --- */
+.hero .hero-headline, .hero .hero-offer {
+    color: #fff !important; /* Force the text to be white */
+    text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+}
+.hero-headline {
+    font-size: 4.5rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+.hero-offer {
+    font-size: 1.3rem;
+    margin-bottom: 2.5rem;
+}
+/* --- END OF FIX --- */
+
+.hero-cta {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+/* Base style for BOTH hero buttons to guarantee they are the same size */
+.glass-btn {
+    padding: 12px 28px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none !important;
+    text-transform: none !important;
+    width: 195px;
+    text-align: center;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(255, 255, 255, 0.3); /* A subtle border for both */
+    color: #fff;
+}
+
+/* --- Primary "Shop All Products" Button --- */
+/* Initial State: Frosted Glass */
+.glass-btn {
+    background-color: #fff;
+    color: #282c3f;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-color: #fff; /* Solid white border */
+    
+}
+/* Hover State: Brighter Frosted Glass */
+.glass-btn:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: white;
+    
+}
+
+/* --- THIS IS THE KEY FIX --- */
+/* --- Secondary "Learn More" Button --- */
+
+/* Initial State: Inverted/Ghost */
+.glass-btn.secondary {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: white;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-color: #e6e6e6;
+}
+
+/* Hover State: Solid White with Dark Text */
+.glass-btn.secondary:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* --- General Sections --- */
+.trust-section, .featured-products { 
+    padding: 80px 20px; /* Increased padding for more space */
+}
+
+/* ADD THIS NEW RULE */
+.bg-light-grey {
+    background-color: #f9f9f9;
+    border-top: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.trust-section {
+    padding: 60px 20px;
+    text-align: center;
+    background-color: #f9f9f9; /* Changed to a slightly different grey */
+    border-top: 1px solid #e0e0e0;
+}
+
+.section-title, h2 { /* Consolidated h2 styling */
+    text-align: center;
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 50px; /* Increased bottom margin for more space */
+    color: #282c3f;
+}
+
+.trust-section h2 {
+    color: #282c3f;
+    margin-top: 0; /* Add this */
+    margin-bottom: 1rem;
+}
+.trust-section p {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    color: #535766;
+    line-height: 1.8;
+}
+
+/* --- Featured Products & Product Cards (Definitive Final Theme) --- */
+
+/* This styles the section itself */
+.featured-products {
+    padding: 50px 0;
+    background-color: #f9f9f9; /* The subtle, light grey background */
+    border-top: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* This is the base style for ALL product cards */
+.product-card {
+    background-color: #fff; /* A clean white card */
+    text-align: left;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+    border: 1px solid #e0e0e0; /* A very subtle default border */
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+.product-card:hover {
+    box-shadow: 0 12px 28px rgba(0,0,0,0.12); /* A more prominent shadow on hover */
+    transform: translateY(-4px); /* A stronger lift effect */
+    z-index: 10;
+}
+
+.product-image-container {
+    position: relative;
+    width: 100%;
+    margin-bottom: 12px;
+}
+.product-thumb {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    display: block;
+}
+
+.rating-overlay {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    z-index: 5;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    
+    /* --- THIS IS THE KEY FIX --- */
+    color: #282c3f; /* Set the default text color to DARK */
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    /* --- END OF FIX --- */
+}
+
+/* We still need the color rules for the icons */
+.rating-overlay .rating-good { color: #28a745; }
+.rating-overlay .rating-average { color: #ffc107; }
+.rating-overlay .rating-bad { color: #dc3545; }
+
+.rating-overlay i {
+    font-size: 0.8rem;
+    /* The color will now be inherited from the classes above */
+}
+
+.product-info {
+    padding: 0 15px 15px 15px; /* Increased padding */
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+.product-info a { text-decoration: none !important; color: inherit !important; }
+.product-brand:hover, .product-name:hover { color: #007bff !important; }
+
+.product-brand, .product-brand a {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #282c3f !important; /* Force the dark text color */
+    margin: 0 0 4px 0;
+    text-decoration: none !important; /* Also ensure no underline */
+}
+.product-name { font-size: 0.9rem; color: #535766; margin: 0 0 12px 0; }
+.price-box {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.sale-price { font-size: 1rem; font-weight: 700; }
+.original-price { font-size: 0.85rem; color: #7e818c; text-decoration: line-through; }
+.discount-badge { font-size: 0.85rem; font-weight: 700; color: #ff905a; }
+
+/* Quick View Button */
+.quick-view-btn {
+    position: absolute;
+    bottom: -50px;
+    left: 0;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.95);
+    color: #282c3f;
+    border: none;
+    border-top: 1px solid #e0e0e0;
+    padding: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    z-index: 6;
+    transition: bottom 0.3s ease;
+}
+.product-card:hover .quick-view-btn {
+    bottom: 0;
+}
+
+/* --- Product Carousel (Final Theme) --- */
+.product-carousel {
+    padding: 10px 50px 40px 50px;
+    margin: 0 -50px;
+}
+.swiper-slide {
+    display: flex !important;
+    height: auto !important;
+}
+.swiper-button-next,
+.swiper-button-prev {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+}
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+    background-color: #f5f5f6;
+    transform: scale(1.05);
+}
+.swiper-button-next::after,
+.swiper-button-prev::after {
+    width: auto !important;
+    height: auto !important;
+    font-size: 1rem !important;
+    font-weight: 800 !important;
+    color: #535766;
+}
+
+/* --- Hero Section Buttons --- */
+.hero-cta {
+    display: flex;
+    gap: 15px; /* Space between buttons */
+    justify-content: center; /* Center the buttons in the hero section */
+    margin-top: 2rem;
+}
+
+/* Primary CTA (e.g., Shop All Products) */
+.btn-primary.hero-cta-primary {
+    padding: 14px 30px; /* Larger padding for prominence */
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 8px; /* More rounded corners */
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4); /* Subtle shadow for depth */
+    transition: all 0.3s ease;
+    border: none; /* Remove default border for a cleaner look */
+}
+
+.btn-primary.hero-cta-primary:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    box-shadow: 0 6px 16px rgba(0, 123, 255, 0.5); /* Slightly stronger shadow on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+}
+
+/* Secondary CTA (e.g., Learn More) - Now styled as an inverted button */
+.btn-secondary.hero-cta-secondary {
+    padding: 14px 30px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    
+    /* Inverted style */
+    background-color: transparent;
+    color: #fff;
+    border: 2px solid #fff; /* White border */
+}
+
+.btn-secondary.hero-cta-secondary:hover {
+    background-color: #fff;
+    color: #282c3f; /* Dark text on hover */
+}
+
+/* --- Other Pages & Components --- */
+.page-header { background-color: #f4f4f4; padding: 40px 0; text-align: center; border-bottom: 1px solid #ddd; }
+.page-header h1 { margin: 0; font-size: 2.8rem; }
+.page-content { display: flex; gap: 30px; margin-top: 40px; margin-bottom: 40px; }
+.sidebar { flex: 0 0 220px; }
+.main-content { flex-grow: 1; }
+.filter-group { margin-bottom: 30px; }
+.filter-group h4 { font-size: 1.2rem; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 15px; }
+.filter-group ul { list-style: none; padding: 0; }
+.filter-group ul li a { text-decoration: none; color: #333; line-height: 1.8; }
+.sidebar .filter-group li.active a { font-weight: 700; color: #007bff; }
+.btn-clear-filters { display: inline-block; padding: 8px 15px; background: #dc3545; color: white; text-decoration: none; border-radius: 5px; font-size: 0.9rem; margin-bottom: 20px; }
+.product-detail-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; }
+.reviews-section { margin-top: 80px; border-top: 1px solid #eee; padding-top: 20px; }
+.auth-container { display: flex; justify-content: center; align-items: center; padding: 60px 20px; background-color: #f9f9f9; }
+.auth-form { background: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 450px; }
+.flash-messages { padding: 0; list-style: none; text-align: center; }
+.flash { padding: 15px; color: #fff; }
+.flash.success { background-color: #28a745; }
+.flash.error { background-color: #dc3545; }
+.cart-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 40px; }
+.cart-summary { background: #f9f9f9; padding: 30px; border-radius: 8px; align-self: start; text-align: center; }
+.cart-summary .btn-primary { display: block; width: 100%; margin-top: 25px; }
+.order-card { background: #fff; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 30px; }
+.order-header { padding: 20px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
+.checkout-success-container { padding: 80px 20px; text-align: center; }
+.chat-widget-container { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
+.chat-widget { width: 350px; height: 500px; /* etc */ }
+
+/* --- Footer --- */
+.site-footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #333;
+    color: #fff;
+    margin-top: 40px;
+}
+
+.padding0{
+    padding: 0px !important;
+}
+
+.margin0{
+    margin: 0px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .nav-menu {
+        display: none; /* Simple hiding for mobile, a JS toggle is needed for a hamburger menu */
+    }
+    .hero-headline {
+        font-size: 2.5rem;
+    }
+}
+
+/* static/css/style.css (add this at the end) */
+
+/* --- Page Header --- */
+.page-header {
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: center;
+    
+    /* THE KEY FIX: Using !important to force the padding */
+    padding-top: 25px !important;
+    padding-bottom: 25px !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+}
+
+.page-header h1 {
+    margin: 0 !important; /* Force margin to be zero */
+    font-size: 2.2rem;
+    font-family: 'Playfair Display', serif;
+}
+
+/* --- Product Listing Page Layout (Definitive Final Version) --- */
+
+/* This is the new full-width container for the page */
+.page-layout-container {
+    display: grid;
+    /* A fixed, sleeker 220px sidebar and a flexible main content area */
+    grid-template-columns: 220px 1fr;
+    gap: 40px;
+    /* We use padding on the container to create the space on the sides */
+    padding: 40px 30px;
+}
+
+/* --- Sidebar Styling --- */
+
+.filter-group {
+    margin-bottom: 25px;
+}
+.filter-group h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+.filter-group ul {
+    list-style: none;
+    padding: 0;
+}
+.filter-group ul li a {
+    text-decoration: none;
+    color: #535766;
+    line-height: 1.9;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+.sidebar .filter-group li.active a {
+    font-weight: 700;
+    color: #007bff;
+}
+.btn-clear-filters {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    background: #dc3545;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+.sidebar .dropdown .btn {
+    width: 100%;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f5f5f6;
+    border: 1px solid #ddd;
+    color: #282c3f;
+    font-weight: 600;
+    padding: 10px 12px;
+    font-size: 0.9rem;
+}
+.sidebar .dropdown .dropdown-menu {
+    width: 100%;
+}
+
+
+/* --- THIS IS THE RESTORED PRODUCT GRID STYLE --- */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 25px;
+}
+/* --- Editorial Product Detail Page (Final Version) --- */
+.page-content-detail {
+    padding-top: 60px;
+    padding-bottom: 60px;
+}
+
+.product-detail-layout-editorial {
+    display: grid;
+    /* A 40% info column and a 60% image column */
+    grid-template-columns: 1fr 40%;
+    gap: 50px;
+    align-items: flex-start;
+}
+
+/* The Image Grid */
+.product-image-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two equal columns */
+    grid-template-rows: auto;
+    gap: 20px;
+    /* This defines our beautiful, asymmetrical layout */
+    grid-template-areas:
+        "main main"
+        "detail lifestyle";
+}
+.product-image-grid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+/* Assigning images to grid areas */
+.img-main { grid-area: main; }
+.img-lifestyle { grid-area: lifestyle; }
+.img-detail { grid-area: detail; }
+.img-main-fallback {
+    grid-column: 1 / -1; /* Make the fallback image span both columns */
+}
+
+
+/* The Info Column */
+.product-detail-info {
+    position: sticky; /* Makes the info stay in place as you scroll past the images */
+    top: 120px; /* Offset from the header */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.product-detail-info h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    line-height: 1.2;
+    margin: 0;
+}
+
+.product-detail-brand {
+    font-size: 1.1rem;
+    color: #777;
+    margin-bottom: 15px;
+}
+
+/* This is the base style for ALL rating badges on the site */
+.product-rating span
+{
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 700;
+    color: #fff; /* Default text color for all badges is WHITE */
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.review-rating span {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 700;
+    color: #fff; /* Default text color for all badges is WHITE */
+    display: inline-block;
+    margin-top: 5px;
+}
+
+/* Green for Good reviews (4.0+) */
+.rating-good {
+    color: #28a745;
+}
+
+/* Red for Bad reviews (Below 3.0) */
+.rating-bad {
+    color: #dc3545;
+}
+
+
+
+/* This is a fallback for the main product rating badge if you ever want to use yellow again */
+.rating-average {
+
+    color: #ffc107;
+}
+
+.review-rating-good {
+    background-color: #28a745;
+}
+
+/* Red for Bad reviews (Below 3.0) */
+.review-rating-bad {
+    background-color: #dc3545;
+}
+
+
+/* This is a fallback for the main product rating badge if you ever want to use yellow again */
+.review-rating-average {
+    background-color: #ffc107;
+     /* NOTE: Yellow requires dark text for readability */
+}
+
+/* --- Specific Size for Customer Review Badges --- */
+
+/* This rule ONLY targets the spans inside the review section */
+/*  <<<<<<<<<<<<<<<<<< PASTE THE NEW CODE HERE <<<<<<<<<<<<<<<<<< */
+.review-rating span {
+    padding: 4px 8px; /* Reduced padding to make the badge smaller */
+    font-size: 0.8rem;  /* Slightly smaller font to match */
+    border-radius: 4px; /* Slightly smaller corner radius */
+}
+
+.product-detail-price {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #007bff;
+    margin: 20px 0;
+}
+
+.product-long-description h3 {
+    margin-bottom: 10px;
+}
+
+
+/* The FINAL, corrected .btn-large version */
+.btn-large {
+    display: block;          /* Make it a block-level element to fill the width */
+    width: 100%;             /* Now it will correctly fill 100% of the container */
+    padding: 15px;           /* Apply padding evenly inside the button */
+    font-size: 1.1rem;
+    white-space: nowrap;     /* Prevent text from wrapping */
+    text-align: center;      /* Ensure text is centered inside the button */
+}
+
+/* --- Reviews Section --- */
+.reviews-section {
+    margin-top: 80px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.review-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.review-rating {
+    font-weight: 600;
+    color: #ffc107;
+}
+
+.review-comment {
+    font-style: italic;
+    color: #555;
+    margin: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .product-detail-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-content {
+        flex-direction: column;
+    }
+}
+
+/* --- Redesigned Chatbot UI (Final Version) --- */
+#chat-widget-container {
+    position: fixed;
+    bottom: 20px; /* A bit of space from the edge */
+    right: 20px;  /* A bit of space from the edge */
+    z-index: 1000;
+    /* We make the container just big enough for the button */
+    width: 60px;
+    height: 60px;
+}
+.chat-toggle-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.chat-toggle-button i {
+    font-size: 2rem;
+}
+.chat-toggle-button:hover {
+    transform: scale(1.1);
+    background-color: #0056b3;
+}
+
+.chat-widget {
+    /* --- THE KEY FIX --- */
+    position: absolute; /* Position it relative to the container */
+    bottom: 0;          /* Align its bottom with the container's bottom */
+    right: 0;           /* Align its right with the container's right */
+    /* --- END OF FIX --- */
+
+    background-color: #fff;
+    width: 370px;
+    height: 600px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: scale(0);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+}
+
+.chat-widget.open {
+    transform: scale(1);
+    opacity: 1;
+}
+
+/* Header */
+.chat-header {
+    background-color: #f5f5f6;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e0e0e0;
+}
+.header-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.online-indicator {
+    width: 10px;
+    height: 10px;
+    background-color: #28a745; /* Green for online */
+    border-radius: 50%;
+}
+.header-text h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #282c3f;
+    
+    /* THE KEY FIX: Force the use of the clean, sans-serif font */
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600; /* Use a semi-bold weight for a clean look */
+}
+.header-text p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+.chat-minimize-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+.chat-minimize-button i {
+    font-size: 1.5rem;
+    color: #6c757d;
+}
+
+/* Messages Area */
+.chat-messages {
+    flex-grow: 1;
+    padding: 20px;
+    list-style: none;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.chat-messages li {
+    padding: 10px 15px;
+    border-radius: 18px;
+    max-width: 80%;
+    word-wrap: break-word;
+    line-height: 1.5;
+}
+.user-message {
+    background-color: #007bff;
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px; /* "Tail" effect */
+}
+.bot-message {
+    background-color: #f1f1f1;
+    color: #282c3f;
+    align-self: flex-start;
+    border-bottom-left-radius: 4px; /* "Tail" effect */
+}
+
+/* Suggested Replies */
+.suggested-replies {
+    padding: 0 20px 15px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.suggestion-chip {
+    background-color: transparent;
+    border: 1px solid #007bff;
+    color: #007bff;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.suggestion-chip:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+/* Input Form */
+.chat-form {
+    display: flex;
+    padding: 15px 20px;
+    border-top: 1px solid #e0e0e0;
+    gap: 10px;
+    align-items: center;
+}
+#chat-input {
+    flex-grow: 1;
+    border: none;
+    background-color: #f1f1f1;
+    border-radius: 20px;
+    padding: 12px 18px;
+    font-size: 1rem;
+    outline: none;
+}
+#chat-send-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    flex-shrink: 0; /* Prevents button from shrinking */
+}
+#chat-send-button:hover {
+    background-color: #0056b3;
+}
+#chat-send-button i {
+    font-size: 1.5rem;
+}
+
+/* --- Authentication Forms --- */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+    background-color: #f9f9f9;
+}
+.auth-form {
+    background: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 450px;
+}
+.auth-form h2 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+.form-group {
+    margin-bottom: 20px;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.auth-switch {
+    text-align: center;
+    margin-top: 20px;
+}
+.nav-auth {
+    margin-left: auto; /* Pushes auth links to the right */
+}
+.btn-secondary-outline { /* New button style for Register */
+    background-color: transparent;
+    color: #007bff;
+    border: 1px solid #007bff;
+    padding: 8px 16px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+.btn-secondary-outline:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+/* --- Flashed Messages (Improved & Repositioned) --- */
+.flash-messages {
+    position: fixed; /* Fix position relative to the viewport */
+    top: 10px;       /* Position it just below your 80px header */
+    left: 50%;       /* Start at the horizontal center */
+    transform: translateX(-50%); /* Perfectly center the container */
+    width: 100%;
+    max-width: 500px; /* Give it a max-width for a clean look on large screens */
+    z-index: 9999;    /* Ensure it appears on top of all other content */
+    list-style: none;
+    padding: 0 20px;  /* Add side padding for mobile */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;        /* Add space between multiple stacked messages */
+}
+
+.flash {
+    display: flex;
+    justify-content: space-between; /* Push text and close button to opposite ends */
+    align-items: center;
+    padding: 15px 20px;
+    color: #fff;
+    border-radius: 8px; /* Softer, modern corners */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* Add depth and lift it off the page */
+    font-weight: 600;
+    opacity: 0; /* Start hidden for animation */
+    transform: translateY(-20px); /* Start slightly above for a slide-down effect */
+    animation: slideIn 0.5s forwards; /* Apply the entrance animation */
+}
+
+/* Keyframes for the slide-down and fade-in animation */
+@keyframes slideIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Colors for different message types */
+.flash.success { background-color: #28a745; }
+.flash.error   { background-color: #dc3545; }
+/* We can add other styles, like 'info' for non-critical messages */
+.flash.info    { background-color: #17a2b8; }
+.flash.message { background-color: #17a2b8; }/* NEW: Style for the default message */
+
+/* Style for the new close button */
+.flash-close {
+    background: none;
+    border: none;
+    color: inherit; /* Makes the '×' the same color as the message text */
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    opacity: 0.7;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    padding-left: 20px; /* Add space between the message and the button */
+}
+
+.flash-close:hover {
+    opacity: 1;
+}
+
+/* --- Product Detail Quantity --- */
+.form-group-inline {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+.form-group-inline label {
+    font-weight: 600;
+}
+.form-group-inline input {
+    width: 60px;
+    padding: 8px;
+    text-align: center;
+}
+
+/* --- Cart Page Styles (v13 - Definitive Centered Fix) --- */
+
+.cart-page-container {
+    display: block;
+}
+
+.cart-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 2.5fr) minmax(0, 1fr);
+    gap: 40px;
+    align-items: flex-start;
+}
+
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+/* --- THIS IS THE KEY HEADER ALIGNMENT FIX --- */
+.cart-table thead th {
+    padding: 10px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #282c3f;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: #282c3f;
+    font-weight: 700;
+}
+.cart-table thead .col-product { text-align: left; }
+.cart-table thead .col-price { text-align: center; }
+.cart-table thead .col-quantity { text-align: center; }
+.cart-table thead .col-subtotal { text-align: center; }
+/* --- END OF HEADER FIX --- */
+
+
+/* All table cells */
+.cart-table td {
+    padding: 20px 0px;
+    border-bottom: 1px solid #e0e0e0;
+    vertical-align: middle;
+}
+
+/* Define column widths */
+.col-product  { width: 56%; }
+.col-price    { width: 15%; }
+.col-quantity { width: 20%; }
+.col-subtotal { width: 15%; }
+.col-remove   { width: 5%;  }
+
+/* Cell Content Styling */
+.product-cell { display: flex; align-items: center; gap: 15px; }
+.product-cell img { width: 110px; height: auto; border-radius: 4px; }
+
+/* --- THIS IS THE KEY CONTENT ALIGNMENT FIX --- */
+.price-cell, .col-quantity, .col-subtotal, .col-remove {
+    text-align: center; /* Center the content in these columns */
+}
+.price-cell { display: flex; flex-direction: column; align-items: center; }
+.price-cell .original-price { font-size: 0.8rem; text-decoration: line-through; color: #7e818c; }
+.col-subtotal strong { font-size: 1.1rem; }
+
+
+.update-form input { width: 50px; text-align: center; margin-right: 10px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+.update-form button { cursor: pointer; background-color: #6c757d; color: white; border: none; border-radius: 4px; padding: 8px 12px; }
+
+.btn-remove {
+    background: none;
+    border: none;
+    color: #dc3545;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    top: -2px;
+    left: -10px; /* <-- THIS IS THE FIX: Nudges it 4 pixels to the left */
+}
+/* --- END OF KEY FIXES --- */
+
+/* Cart Summary Box */
+.cart-summary {
+    background: #f9f9f9;
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+.cart-summary h3 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+}
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+}
+.summary-row span:last-child {
+    font-weight: 700;
+    color: #282c3f;
+}
+.cart-summary .btn-primary {
+    width: 100%;
+}
+
+.cart-empty {
+    /* --- THE KEY FIX --- */
+    width: 80%;
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    padding: 100px 0;
+    text-align: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.cart-empty p {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 10px;
+    text-align: center;
+    font-size: large;
+    font-weight: 500; /* Add space between the text and the button */
+}
+@media (max-width: 992px) {
+    .cart-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* --- Checkout Success Page Fix --- */
+.checkout-success-container {
+    padding: 80px 20px;
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    justify-content: center; /* Center vertically */
+    align-items: center;     /* Center horizontally */
+    text-align: center;
+}
+
+.checkout-success-container h2 {
+    margin: 0;
+}
+
+.checkout-success-container p {
+    margin: 15px 0 30px 0; /* Add space between text and button */
+    color: #555;
+}
+
+.checkout-success-container .btn-primary {
+    /* Define a reasonable size for the button */
+    padding: 12px 30px;
+    font-size: 1.1rem;
+}
+
+/* --- Homepage Specific Button Override (Structural Fix) --- */
+
+/* This rule targets the new container we just added */
+.homepage-button-container {
+    /* Step 1: Push this container to the bottom of the card */
+    margin-top: auto;
+
+    /* Step 2: Make the container a flexbox */
+    display: flex;
+
+    /* Step 3: THE KEY FIX - Center the button within this new container */
+    justify-content: center;
+
+    /* Step 4: Make the container take up the full width */
+    width: 100%;
+}
+
+/* --- Profile Page & Order History Styles (v2 - Polished) --- */
+.order-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    overflow: hidden; /* Prevents content from breaking the border-radius */
+}
+
+.order-header {
+    background: #f9f9f9;
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between; /* This is the key: pushes groups apart */
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px; /* Adds space if items wrap on small screens */
+}
+
+/* --- Group 1: Order Info --- */
+.order-info {
+    display: flex;
+    flex-direction: column; /* Stack "Order #" and "Placed on" */
+}
+.order-info strong {
+    font-size: 1.2rem;
+    color: #282c3f;
+}
+.order-info small {
+    color: #555;
+    font-size: 0.9rem;
+}
+
+/* --- Group 2: Status and Total --- */
+.order-details {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Creates clean space between the badge and the total */
+}
+
+.order-status-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #fff;
+}
+.status-completed {
+    background-color: #28a745; /* Green */
+}
+.status-return-requested { /* Updated class name to match the HTML */
+    font-weight: bold;
+    color: #ffc107;/* Yellow */
+}
+
+.order-total {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #282c3f;
+}
+
+/* --- Order Body (Items Table) --- */
+.order-body {
+    padding: 0 20px; /* Remove vertical padding to let table define it */
+}
+.order-items-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.order-items-table th, .order-items-table td {
+    padding: 15px 0; /* More vertical padding */
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+.order-items-table tr:last-child td {
+    border-bottom: none; /* Remove border on the last item */
+}
+.order-items-table th {
+    font-weight: 600;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+/* New style for the summary status in the order card */
+.order-summary-status {
+    padding: 15px 20px;
+    border-top: 1px solid #eee;
+    font-size: 0.95rem;
+    color: #535766;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.order-summary-status i {
+    font-size: 1.2rem;
+    color: #282c3f;
+}
+
+/* --- Order Footer (Return Button) --- */
+.order-footer {
+    padding: 15px 20px;
+    background-color: #f9f9f9;
+    border-top: 1px solid #e0e0e0;
+    
+    /* --- THIS IS THE KEY FIX --- */
+    display: flex;
+    justify-content: space-between; /* Pushes the status and actions to opposite ends */
+    align-items: center;
+    /* --- END OF FIX --- */
+}
+
+/* New container for the status text */
+.order-footer-status {
+    font-size: 0.95rem;
+    color: #535766;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.order-footer-status i {
+    font-size: 1.2rem;
+    color: #282c3f;
+}
+
+/* New container for the buttons on the right */
+.order-footer-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+/* --- Search & Filter Styles --- */
+.nav-search-form {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+}
+.nav-search-form input {
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    padding: 8px 15px;
+}
+.nav-search-form button {
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 15px;
+    margin-left: -30px; /* Pulls button slightly over the input */
+    cursor: pointer;
+}
+.sidebar .filter-group li.active a {
+    font-weight: 700;
+    color: #007bff;
+}
+.btn-clear-filters {
+    display: inline-block;
+    padding: 8px 15px;
+    background: #dc3545;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+/* --- Header Dropdown Menu --- */
+.header-dropdown {
+    position: relative; /* This is the anchor for the absolute positioned dropdown */
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    z-index: 100;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    border-radius: 8px;
+    padding: 10px 0;
+    border: 1px solid #e0e0e0;
+
+    /* --- THE CENTERING FIX --- */
+    left: 50%; /* Step 1: Move the dropdown's left edge to the center of the icon */
+    transform: translateX(-50%); /* Step 2: Pull the dropdown back to the left by half its own width */
+}
+
+.dropdown-content a {
+    color: #282c3f;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block; /* Make the entire area clickable */
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.dropdown-content a:hover {
+    background-color: #e0e0e0;
+}
+
+/* This is the magic: Show the dropdown when hovering over the container */
+.header-dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* --- Static Content Pages --- */
+.static-content {
+    max-width: 800px; /* Constrain width for readability */
+    margin: 0 auto; /* Center the content block */
+    line-height: 1.8;
+}
+.static-content h2 {
+    font-size: 1.8rem;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+.static-content ul {
+    list-style: none;
+    padding: 0;
+}
+.static-content li {
+    margin-bottom: 10px;
+}
+
+/* --- Trust Section & Footer (Definitive Final Layout) --- */
+
+/* Trust Section (Sub-Footer) */
+.trust-section {
+    padding: 60px 20px;
+    text-align: center;
+    background-color: #f9f9f9;
+    border-top: 1px solid #e0e0e0;
+    margin: 0; /* KEY FIX: Remove all margins */
+}
+.trust-section h2 {
+    color: #282c3f;
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+.trust-section p {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    color: #535766;
+    line-height: 1.8;
+}
+
+/* Main Footer */
+.site-footer {
+    background-color: #282c3f;
+    color: #fff;
+    padding: 60px 0 0 0; /* Add padding to the top, remove from bottom */
+    margin: 0; /* KEY FIX: Remove all margins */
+}
+.footer-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    padding: 0 20px 40px 20px; /* Control padding here */
+    max-width: 1200px; /* Match the main container */
+    margin: 0 auto;
+}
+.footer-column h5 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+.footer-column ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.footer-column ul li a {
+    display: block;
+    text-decoration: none;
+    color: #a9a9b0;
+    margin-bottom: 12px;
+    transition: color 0.3s ease;
+}
+.footer-column ul li a:hover {
+    color: #fff;
+}
+.footer-bottom {
+    text-align: center;
+    padding: 20px;
+    border-top: 1px solid #4d4d5a;
+    font-size: 0.9rem;
+    color: #a9a9b0;
+    margin-top: 40px; /* Space between columns and copyright */
+}
+
+/* --- Order History Enhancements --- */
+.order-header {
+    flex-wrap: wrap; /* Allows items to wrap on smaller screens if needed */
+}
+
+.order-status-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+/* Different colors for different statuses */
+.status-completed {
+    background-color: #28a745; /* Green */
+}
+.status-return.requested {
+    background-color: #ffc107; /* Yellow */
+    color: #333;
+}
+
+.order-footer {
+    padding: 15px 20px;
+    background-color: #f9f9f9;
+    text-align: right;
+    border-top: 1px solid #ddd;
+}
+.order-footer p {
+    margin: 0;
+    font-style: italic;
+    color: #555;
+}
+
+/* --- General Buttons (Final Polished Version) --- */
+.btn {
+    display: inline-block; /* Ensures proper layout */
+    text-decoration: none !important;
+    text-transform: none !important;
+    font-weight: 700 !important;
+    font-size: 1rem;
+    letter-spacing: normal !important;
+    text-align: center;
+    border: 2px solid transparent; /* Consistent border for sizing */
+    border-radius: 8px; /* The rounded corners you like */
+    padding: 12px 28px; /* Generous, professional padding */
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
+    
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+    transform: translateY(-2px); /* Add a nice lift effect */
+}
+
+/* A new secondary button style for non-primary actions */
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+}
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* --- Price & Discount Styles --- */
+.price-box, .price-box-detail { 
+    
+    margin-bottom: 15px;
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+}
+
+.sale-price { font-size: 1.4rem; font-weight: 700; color: #282c3f; }
+.original-price { font-size: 1rem; color: #7e818c; text-decoration: line-through; margin-left: 0px; }
+.discount-badge { font-size: 0.9rem; font-weight: 700; color: #ff905a; margin-left: 0px; }
+.price-box-detail .sale-price { font-size: 2.2rem; }
+.price-box-detail .original-price-row { margin-top: 5px; }
+
+/* --- New Filter Styles --- */
+.sidebar select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+}
+
+/* 2. Style the larger product image */
+.cart-product-image-link {
+    flex-shrink: 0; /* Prevents the image container from shrinking */
+}
+.cart-product-image {
+    width: 90px;  /* MODIFIED: Increased image width */
+    height: auto;
+    border-radius: 8px; /* Softer corners */
+    /* border: 1px solid #e0e0e0; */
+}
+
+/* 3. Organize the product details (name + size selector) */
+.cart-product-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Space between product name and size selector */
+}
+
+/* 4. Style the new size selector */
+.cart-size-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.cart-size-selector label {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+.cart-size-selector .form-select-sm {
+    width: 90px; /* A clean, fixed width for the dropdown */
+}
+
+/* 5. Restore the quantity controls layout */
+.cart-quantity-controls {
+    display: flex;
+    flex-direction: column; /* Stacks input over button */
+    align-items: center;
+    gap: 8px; /* Space between input and button */
+}
+.cart-quantity-controls .form-control-sm {
+    width: 60px;
+    text-align: center;
+}
+
+/* --- Cart Page Price Display --- */
+.cart-price-box {
+    display: flex;
+    flex-direction: column; /* Stack prices vertically */
+    align-items: flex-start; /* <-- Corrected: comma is removed */
+}
+.cart-price-box .sale-price {
+    font-size: 1.1rem; /* Make the sale price slightly smaller in the cart */
+}
+
+/* Make sure cart images fill their box */
+.product-image-placeholder-small img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* --- Bootstrap Dropdown Customization --- */
+.sidebar .dropdown .btn {
+    width: 100%; /* Make the button fill the sidebar width */
+    text-align: left; /* Align text to the left */
+    display: flex;
+    justify-content: space-between; /* Pushes text and arrow apart */
+    align-items: center;
+    background-color: #f5f5f6; /* A light grey to match the search bar */
+    border: 1px solid #ddd;
+    color: #282c3f;
+    font-weight: 600;
+}
+.sidebar .dropdown .btn:focus, .sidebar .dropdown .btn:active {
+    outline: none !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important; /* Blue glow on focus */
+}
+
+.sidebar .dropdown .dropdown-menu {
+    width: 100%; /* Make the menu match the button's width */
+}
+
+/* --- Success Button Style --- */
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: #fff;
+}
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+/* --- Leave a Review Styles --- */
+.review-submitted-text {
+    font-style: italic;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+.btn-small {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+}
+.review-form {
+    width: 100%;
+    max-width: 600px;
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+.review-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Star Rating Input */
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 5px;
+}
+.star-rating input { display: none; }
+.star-rating label {
+    font-size: 2.5rem;
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.star-rating input:checked ~ label,
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+    color: #ffc107;
+}
+
+/* --- Product Detail Page (Definitive Final Layout) --- */
+.page-content-detail {
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+.product-detail-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    align-items: flex-start;
+}
+
+/* THIS IS THE CORRECTED IMAGE STYLE */
+.product-detail-image {
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #e0e0e0;
+}
+.product-detail-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Product Info Column */
+.product-detail-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.product-detail-info h1 {
+    font-size: 2.2rem;
+    line-height: 1.3;
+    margin: 0;
+}
+.product-detail-brand {
+    font-size: 1.1rem;
+    color: #555;
+    margin: 0;
+}
+.product-long-description {
+    margin-top: 10px;
+}
+.product-long-description h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+/* Add to Cart Section */
+.product-actions {
+    margin-top: 10px;
+}
+.form-group-inline {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+.form-group-inline label {
+    font-weight: 600;
+}
+.form-group-inline input {
+    width: 70px;
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+.btn-large {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+/* Responsive fix for smaller screens */
+@media (max-width: 992px) {
+    .product-detail-layout {
+        grid-template-columns: 1fr; /* Stack to a single column on tablets and phones */
+    }
+}
+
+/* --- Upgraded Hero Section --- */
+.hero-container-new {
+    display: flex;
+    align-items: center; /* Vertically center the content */
+    height: 100%;
+    width: 100%;
+}
+
+.hero-content-new {
+    position: relative;
+    z-index: 2;
+    color: white;
+    text-align: left; /* Left-align the text block */
+    max-width: 600px;
+}
+
+.hero-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem; /* Even larger for more impact */
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.6);
+}
+
+.hero-offer {
+    font-size: 1.3rem;
+    margin-bottom: 2.5rem;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+}
+
+.hero-cta {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-start; /* Left-align the buttons */
+}
+
+/* Base style for hero buttons */
+.button {
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    text-decoration: none !important;
+    text-transform: none !important;
+    width: 195px;
+    text-align: center;
+}
+
+/* Primary "Shop All" Button */
+.button {
+    background-color: #fff;
+    color: #282c3f;
+    border-color: #fff;
+}
+.button:hover {
+    background-color: transparent;
+    color: #fff;
+}
+
+/* Secondary "Learn More" Button */
+.button.secondary {
+    background-color: transparent;
+    color: #fff;
+    border-color: #fff;
+}
+.button.secondary:hover {
+    background-color: #fff;
+    color: #282c3f;
+}
+
+/* --- Immersive Category Showcase (Definitive Final Fix) --- */
+
+/* This is the main container that holds the background image */
+.category-showcase {
+    position: relative; /* This is the anchor for the overlay */
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+    
+    /* THE KEY FIX: The image goes directly on the main container */
+    background-image: url("/static/images/category-showcase-bg.png");
+    
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    overflow: hidden; /* A safety measure */
+}
+
+/* This is the overlay that sits on top of the parent's background image */
+.showcase-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* The dark, semi-transparent overlay */
+    z-index: 1; /* Sits on top of the image, but below the content */
+}
+
+/* This is the container for the text and buttons */
+.category-showcase .container {
+    position: relative; /* This ensures it can be given a higher z-index */
+    z-index: 2; /* This lifts the content ON TOP of the overlay */
+}
+
+/* (The rest of your styles for .section-title, .category-links-grid, etc., are correct and go here) */
+.category-showcase .section-title {
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+.category-links-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+    max-width: 700px;
+    margin: 0 auto;
+}
+.category-link-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 25px 20px;
+    text-decoration: none;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    min-height: 90px;
+}
+.category-link-box:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-5px);
+}
+.category-link-box h3 {
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 400 !important;
+    margin: 0;
+    font-family: serif;
+}
+
+/* We no longer need the responsive styles for a 2x2 grid */
+
+/* Responsive adjustments for the showcase grid */
+@media (max-width: 992px) {
+    .category-links-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (max-width: 576px) {
+    .category-links-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* --- Featured Collection Showcase --- */
+.featured-collection {
+    position: relative;
+    
+    /* --- THIS IS THE KEY FIX --- */
+    min-height: 80vh; /* Make the section 80% of the screen's height */
+    /* --- END OF FIX --- */
+    
+    /* We use flexbox to perfectly center the content inside the taller section */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/static/images/collection-desert-wanderer.png");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    text-align: center;
+    color: #fff;
+    padding: 40px 20px; /* Keep some padding for smaller screens */
+}
+
+.collection-content {
+    position: relative;
+    z-index: 2;
+}
+
+/* --- THIS IS THE KEY FIX FOR THE COLLECTION TEXT --- */
+.featured-collection .collection-title, .featured-collection .collection-description {
+    color: #fff !important; /* Force the text to be white */
+    text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+}
+.collection-title {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+.collection-description {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto 2rem auto;
+}
+/* --- END OF FIX --- */
+
+/* Make the collection button have a special style */
+.featured-collection .button {
+    background-color: #fff;
+    color: #282c3f;
+    border-color: #fff;
+    width: auto; /* Let the button be as wide as its text */
+    min-width: 0;
+    padding: 12px 30px;
+}
+
+.featured-collection .button:hover {
+    background-color: transparent;
+    color: #fff;
+}
+
+/* --- Recommended Products Section --- */
+.recommended-products {
+    padding: 50px 0;
+    background-color: #f9f9f9;
+    border-top: 1px solid #e0e0e0;
+}
+
+/* --- Quick View Button --- */
+.product-image-container {
+    position: relative;
+}
+.quick-view-btn {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-weight: 600;
+    cursor: pointer;
+    opacity: 0; /* Hidden by default */
+    transition: all 0.3s ease;
+}
+.product-card:hover .quick-view-btn {
+    opacity: 1; /* Show on hover */
+    bottom: 0px; /* Animate upwards on hover */
+}
+
+.product-card-link, .product-card-link:hover {
+    color: #212529;
+    text-decoration: none; /* Removes the underline */
+}
+
+.quick-view-layout {
+    gap: 20px;
+}
+.modal-body .spinner-border {
+    margin: 40px auto;
+    display: block;
+}
+
+
+/* --- FAQ Page Styles --- */
+.faq-item {
+    margin-bottom: 30px;
+    text-align: left; /* Align text to the left for readability */
+}
+
+.faq-item h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #282c3f;
+    margin-bottom: 10px;
+}
+
+/* --- Track Order Page Styles --- */
+.track-order-form {
+    width: 100%;
+    max-width: 500px;
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    margin-bottom: 40px;
+}
+.track-results {
+    width: 100%;
+    max-width: 500px;
+    background: #f9f9f9;
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+.track-results h3 {
+    margin-top: 0;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 15px;
+}
+.shipping-status {
+    font-weight: 700;
+    color: #007bff;
+}
+
+/* --- "Our Story" (Centered Narrative Layout v2 - Definitive) --- */
+.story-wrapper {
+    padding: 0px 0;
+}
+
+/* This is the container for all text blocks */
+.story-text-block {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+.story-main-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.story-intro {
+    font-size: 1.2rem;
+    text-align: center;
+    line-height: 1.8;
+    color: #535766;
+    margin-bottom: 40px;
+}
+.story-text-block h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.story-text-block p {
+    font-size: 1.1rem;
+    line-height: 1.9;
+    color: #333;
+    text-align: center;
+}
+
+/* --- THIS IS THE KEY FIX FOR THE CENTERED IMAGES --- */
+.story-image-block {
+    /* We use the .container class's properties but give it more vertical space */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px; /* Standard page padding */
+}
+.story-image-block img {
+    width: 100%;
+    height: auto;
+    display: block; /* Removes any extra space below the image */
+    border-radius: 8px; /* The soft corners you like */
+    box-shadow: 0 12px 28px rgba(0,0,0,0.12); /* A professional shadow */
+}
+/* --- END OF FIX --- */
+
+/* --- Order Status / Tracking Page --- */
+.status-card {
+    width: 100%;
+    max-width: 700px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.status-header {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #ddd;
+    font-size: 1.1rem;
+}
+.status-body {
+    padding: 30px;
+}
+.status-timeline {
+    position: relative;
+    list-style: none;
+    padding-left: 20px;
+}
+.status-timeline::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    width: 2px;
+    height: 260px;
+    background-color: #e0e0e0;
+}
+.timeline-item {
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 30px;
+}
+.timeline-icon {
+    position: absolute;
+    left: -10px;
+    top: 0;
+    width: 22px;
+    height: 22px;
+    background-color: #e0e0e0;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+.timeline-item.completed .timeline-icon {
+    background-color: #28a745; /* Green for completed steps */
+}
+.timeline-content strong {
+    font-size: 1.1rem;
+}
+.timeline-content p {
+    margin: 5px 0 0 0;
+    color: #555;
+}
+
+/* --- Profile Page Button Adjustments --- */
+.order-footer {
+    display: flex;
+     /* Align buttons to the right */
+    gap: 10px;
+}
+/* This styles the new "Return In Progress" text */
+.return-requested-text {
+    font-style: italic;
+    color: #535766;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+
+/* --- Brand Pillars Section (Final Integrated Version) --- */
+.brand-pillars {
+    /*padding: 80px 20px;*/
+    padding-top: 50px;
+    padding-right: 20px;
+    padding-bottom: 30px;
+    padding-left: 20px;
+    background-color: #fff;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+.section-header .section-title {
+    margin-bottom: 10px;
+}
+.section-header .section-subtitle {
+    font-size: 1.2rem;
+    color: #535766;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.pillar-card {
+    text-align: center;
+}
+.pillar-card img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+.pillar-content h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    margin: 0 0 10px 0;
+}
+.pillar-content p {
+    font-size: 1rem;
+    color: #535766;
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* This styles our new intro promise paragraph */
+.brand-promise {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 60px auto; /* Add space BELOW it, before the grid */
+}
+.brand-promise p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #333;
+}
+
+/* This styles our new integrated message */
+.final-promise-intro {
+    text-align: center;
+    max-width: 800px;
+    margin: 40px auto 0 auto; /* Add space above it */
+    padding-top: 25px;
+    border-top: 1px solid #e0e0e0;
+}
+.final-promise-intro p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #333;
+    margin-bottom: 0;
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .pillars-grid {
+        grid-template-columns: 1fr;
+        gap: 50px;
+    }
+}
+
+/* --- Account Page Styles (Final Vertical Layout) --- */
+.account-form {
+    width: 100%;
+    max-width: 800px; /* A comfortable max-width for a single column */
+}
+
+/* This is the new vertical layout container */
+.account-layout-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.form-card {
+    background: #f9f9f9;
+    padding: 30px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+}
+.form-card h3 {
+    margin-top: 0;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+}
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+.form-row .form-group {
+    flex: 1;
+}
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; font-weight: 600; margin-bottom: 8px; }
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: #fff;
+    transition: all 0.2s ease;
+}
+
+/* --- THIS IS THE KEY STYLE FOR THE "LOCKED" LOOK --- */
+.form-group input[readonly] {
+    background-color: #e9ecef; /* A light grey to indicate it's locked */
+    border-color: #e0e0e0;
+    cursor: default;
+}
+.form-group input[readonly]:focus {
+    outline: none;
+    box-shadow: none;
+}
+/* --- END OF KEY STYLE --- */
+
+
+.form-group input:disabled {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}
+.form-group small {
+    display: block;
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-top: 5px;
+}
+.form-actions {
+    text-align: center;
+    margin-top: 30px;
+}
+.form-actions .btn {
+    width: 100%;
+    max-width: 300px; /* Give the buttons a max width */
+    margin: 0 auto;
+}
+
+/* --- Checkout Summary & Payment Pages --- */
+.summary-card {
+    background: #f9f9f9;
+    padding: 30px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 450px;
+}
+.summary-card h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+.summary-card p {
+    line-height: 1.8;
+}
+.edit-address-link {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+.final-total {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #282c3f;
+    margin-bottom: 25px;
+}
+
+.payment-form {
+    width: 100%;
+    max-width: 500px;
+}
+
+/* --- Rich Chat Content Styles --- */
+.bot-product-card {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    margin-top: 10px;
+    max-width: 90%;
+    align-self: flex-start;
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+.bot-product-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+.bot-product-info {
+    display: flex;
+    flex-direction: column;
+}
+.bot-product-link {
+    font-weight: 600;
+    color: #282c3f;
+    text-decoration: none;
+    margin-bottom: 5px;
+}
+.bot-product-link:hover {
+    text-decoration: underline;
+}
+.bot-product-price {
+    font-weight: 700;
+    color: #007bff;
+    margin: 0;
+}
+
+
+/* New style for the "No Results" message */
+.no-results-container {
+    text-align: center;
+    padding: 80px 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+.no-results-container h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+}
+.no-results-container p {
+    color: #535766;
+    max-width: 400px;
+    margin: 15px auto 25px auto;
+}
+
+
+
+/* --- Wishlist Button Styles (Definitive Final Version) --- */
+
+.wishlist-form {
+    margin-top: 15px;
+}
+
+/* This is the new, unified style for BOTH the button and the link */
+.btn-wishlist {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: transparent;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    /* This is the key fix for the link */
+    text-decoration: none !important;
+    color: #333 !important; /* Force a consistent text color */
+}
+
+.btn-wishlist:hover {
+    background-color: #f9f9f9;
+    border-color: #ccc;
+}
+
+/* This styles the filled heart icon */
+.btn-wishlist .ph-heart-fill {
+    color: #dc3545;
+}
+
+/* This styles the "In Wishlist" state */
+.btn-wishlist.in-wishlist {
+    background-color: #f0f0f0;
+    color: #333;
+    margin-top: 15px;
+    gap: 0px;
+}
+
+/* --- Live Search Dropdown (Definitive Final Layout) --- */
+
+.header-search-container {
+    position: relative;
+}
+
+.search-results-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 450px; /* A slightly wider dropdown for better results */
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    z-index: 1010;
+    max-height: 450px;
+    overflow-y: auto;
+    
+    /* --- THIS IS THE KEY FIX --- */
+    display: flex;
+    flex-direction: column; /* Force all items into a clean vertical stack */
+    /* --- END OF FIX --- */
+}
+
+.search-result-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 15px;
+    text-decoration: none;
+    color: inherit;
+    border-bottom: 1px solid #f0f0f0;
+    flex-shrink: 0; /* Prevent items from shrinking */
+}
+.search-result-item:last-child {
+    border-bottom: none;
+}
+.search-result-item:hover {
+    background-color: #f9f9f9;
+}
+.search-result-item img {
+    width: 50px; /* Slightly larger image */
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+.search-result-info {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-width: 0;
+}
+.search-result-info .brand, .search-result-info .name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.search-result-info .brand {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #535766;
+}
+.search-result-info .name {
+    font-size: 0.9rem;
+    color: #282c3f;
+}
+.search-result-item .price {
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding-left: 15px; /* Add space from the text */
+    flex-shrink: 0;
+}
+.no-results {
+    padding: 20px;
+    text-align: center;
+    color: #6c757d;
+}
+
+/* --- Review Section Enhancements --- */
+.reviews-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 15px;
+}
+.sort-reviews-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sort-label {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95rem;
+}
+.sort-reviews-form label {
+    font-weight: 600;
+}
+.sort-reviews-form select {
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+.load-more-container {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* --- Detailed Product Rating Box (Product Page) --- */
+
+.detailed-rating-box {
+    display: inline-flex; /* Allows the box to be only as wide as its content */
+    align-items: center;
+    gap: 8px;
+    border: 1px solid #d4d5d9;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-weight: 400;
+    color: #282c3f;
+    width: fit-content;
+}
+
+.detailed-rating-box strong {
+    font-size: 1.1rem;
+}
+
+.detailed-rating-box i {
+    font-size: 1rem;
+}
+
+.rating-divider {
+    width: 1px;
+    height: 16px;
+    background-color: #d4d5d9; /* The vertical line separator */
+}
+
+.detailed-rating-box span {
+    font-size: 0.95rem;
+    color: #535766; /* A softer color for the "Ratings" text */
+    font-weight: 500;
+}
+
+/* --- Size Selection --- */
+.size-selection {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.size-selection h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+.size-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.size-btn {
+    min-width: 50px;
+    height: 50px;
+    padding: 0 15px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+.size-btn:hover {
+    border-color: #282c3f;
+}
+.size-btn.selected {
+    background-color: #282c3f;
+    color: #fff;
+    border-color: #282c3f;
+}
+.size-btn.out-of-stock {
+    background-color: #f8f9fa;
+    color: #ccc;
+    cursor: not-allowed;
+    position: relative;
+    overflow: hidden;
+}
+/* Creates the diagonal line for out-of-stock items */
+.size-btn.out-of-stock::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -10%;
+    width: 120%;
+    height: 1px;
+    background: #ccc;
+    transform: rotate(-45deg);
+}
+#size-error {
+    font-size: 0.9rem;
+    color: #dc3545; /* Red for errors */
+    margin-top: 10px;
+}
+
+/* --- START OF MODIFICATIONS: static/css/style.css (add at the end) --- */
+
+/* --- Professional Account Page Layout --- */
+.account-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr; /* Fixed sidebar, flexible content */
+    gap: 40px;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.account-sidebar nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.account-sidebar nav a {
+    display: block;
+    padding: 15px 20px;
+    text-decoration: none;
+    color: #282c3f;
+    font-weight: 600;
+    font-size: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+    transition: all 0.2s ease;
+}
+
+.account-sidebar nav li:last-child a {
+    border-bottom: none;
+}
+
+.account-sidebar nav a:hover {
+    background-color: #f9f9f9;
+}
+
+.account-sidebar nav a.active {
+    background-color: #282c3f;
+    color: #fff;
+}
+
+.account-content h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+/* --- Dashboard Styles --- */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.dashboard-card {
+    background-color: #f9f9f9;
+    padding: 25px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+}
+.dashboard-card h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+/* --- Address Book Styles --- */
+.address-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 10px;
+    gap: 20px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 25px;
+}
+.address-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+.address-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+}
+.address-card-body {
+    padding: 20px;
+    flex-grow: 1;
+    position: relative;
+}
+.default-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: #28a745;
+    color: white;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+.address-card-footer {
+    background-color: #f9f9f9;
+    padding: 10px 20px;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    gap: 15px;
+}
+.btn-link, .btn-link-danger {
+    background: none;
+    border: none;
+    padding: 0;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none !important;
+}
+.btn-link { color: #007bff; }
+.btn-link-danger { color: #dc3545; }
+
+/* Responsive adjustments for account pages */
+@media (max-width: 992px) {
+    .account-layout {
+        grid-template-columns: 1fr; /* Stack sidebar on top of content */
+    }
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* --- END OF MODIFICATIONS: static/css/style.css --- */
+
+/* --- START OF MODIFICATIONS: static/css/style.css (add at the end) --- */
+
+/* --- Professional Checkout Page Layout --- */
+.checkout-layout {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr; /* Main content is 1.5x wider than sidebar */
+    gap: 40px;
+    align-items: flex-start;
+}
+
+.checkout-main {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.checkout-card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 25px;
+}
+.checkout-card h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.address-option {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+}
+.address-option input[type="radio"] {
+    margin-right: 15px;
+}
+.address-option label {
+    font-weight: normal;
+}
+.edit-address-link {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    display: inline-block;
+    text-decoration: none;
+}
+
+/* --- Order Summary Sidebar --- */
+.checkout-sidebar .order-summary-card {
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 25px;
+    position: sticky; /* Keeps summary in view on scroll */
+    top: 100px;
+}
+.order-summary-card h3 {
+    margin-top: 0;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.summary-items {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+.summary-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+}
+.summary-item:last-child {
+    border-bottom: none;
+}
+.summary-item img {
+    width: 110px;
+    height: auto;
+    border-radius: 4px;
+    margin-left: -20px;
+}
+.summary-item-info {
+    flex-grow: 1;
+}
+.summary-item-info span, .summary-item-info small {
+    display: block;
+}
+.summary-item-info small { color: #555; }
+.summary-item-price { font-weight: 600; }
+
+.summary-promo {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.5rem;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+    margin-bottom: 25px;
+}
+.summary-total strong {
+    color: #282c3f;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .checkout-layout {
+        grid-template-columns: 1fr; /* Stack on smaller screens */
+    }
+    .checkout-sidebar {
+        grid-row: 1; /* Move summary to the top on mobile */
+    }
+}
+
+/* --- END OF MODIFICATIONS: static/css/style.css --- */
+
+/* --- Enhanced Cart & Checkout Summary Styles --- */
+.cart-summary .summary-row, .summary-details .summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 1rem;
+}
+
+.cart-summary .summary-row.discount, .summary-details .summary-row.discount {
+    color: #28a745; /* Green for discounts */
+}
+
+
+.cart-summary .free-shipping, .summary-details .free-shipping {
+    color: #28a745;
+    font-weight: 700;
+}
+
+.cart-summary hr {
+    margin: 15px 0;
+    border: none;
+    border-top: 1px solid #ddd;
+}
+
+.cart-summary .summary-row.total, .summary-total {
+    font-size: 1.2rem; /* Make the final total larger */
+    font-weight: 500;
+}
+
+/* For checkout page summary */
+.summary-details {
+    padding: 20px 0;
+    border-top: 1px solid #ddd;
+    margin-top: 10px;
+}
+.summary-total {
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+    margin-bottom: 25px;
+    font-size: 1.5rem;
+}
+
+/* --- START OF MODIFICATIONS: static/css/style.css (add at the end) --- */
+
+/* --- Professional Payment Method Selector --- */
+
+/* Style for the tabs container */
+#payment-method-tabs {
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* Style for the tab buttons */
+#payment-method-tabs .nav-link {
+    color: #6c757d;
+    font-weight: 600;
+    border: none;
+    border-bottom: 3px solid transparent;
+}
+
+/* Style for the active/selected tab */
+#payment-method-tabs .nav-link.active {
+    color: #007bff;
+    background-color: transparent;
+    border-bottom: 3px solid #007bff;
+}
+
+/* Container for the content of each tab */
+.tab-content {
+    padding-top: 20px;
+}
+
+/* --- Card Payment Styles --- */
+.card-icons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+.card-icons img {
+    height: 32px;
+}
+
+/* --- UPI Payment Styles --- */
+.upi-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.upi-option {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+.upi-option input[type="radio"] {
+    margin-right: 15px;
+}
+.upi-option label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    margin: 0;
+}
+.upi-option img {
+    height: 32px;
+}
+
+/* --- END OF MODIFICATIONS: static/css/style.css --- */
+
+/* --- START OF MODIFICATIONS: static/css/style.css (add at the end) --- */
+
+/* --- Dynamic Order Status Badges --- */
+
+/* Base style for all badges is already defined in .order-status-badge */
+
+/* Green for successful completion */
+.status-completed {
+    background-color: #28a745;
+}
+
+/* Blue for the initial confirmed state */
+.status-confirmed {
+    background-color: #0d6efd;
+}
+
+/* Yellow/Amber for states that require user or admin attention */
+.status-return-requested {
+    background-color: #ffc107;
+    color: #000; /* Dark text for better readability on yellow */
+}
+
+/* NEW: A distinct purple for in-progress states like 'Shipped' or 'In Transit' */
+.status-in-transit {
+    background-color: #6f42c1; /* A professional purple */
+}
+
+/* --- Order Footer Status Text --- */
+.order-footer-status {
+    font-weight: 600; /* Make the status text bold */
+}
+
+/* --- END OF MODIFICATIONS: static/css/style.css --- */
+
+/* --- START OF MODIFICATIONS: static/css/style.css (add at the end) --- */
+
+/* --- Order Header Layout Refinement --- */
+.order-header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Creates clean space between the status badge and the order info text */
+    flex-wrap: wrap; /* Allows items to wrap cleanly on smaller screens */
+}
+
+/* --- END OF MODIFICATIONS: static/css/style.css --- */
+
+/* --- START OF MODIFICATIONS: static/css/style.css (add at the end) --- */
+
+/* --- Professional Order Details Page Layout --- */
+.order-details-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* Main content is 2x wider than sidebar */
+    gap: 30px;
+    align-items: flex-start;
+}
+
+.order-details-main {
+    display: flex;
+    flex-direction: column;
+    gap: 30px; /* Space between the "Items" and "Tracking" cards */
+}
+
+.order-details-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 30px; /* Space between the sidebar cards */
+    position: sticky;
+    top: 100px; /* Makes the sidebar stick on scroll */
+}
+
+.order-details-card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 25px;
+}
+.order-details-card h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+.order-details-card p {
+    line-height: 1.7;
+    margin-bottom: 15px;
+}
+.order-details-card .btn-large {
+    width: 100%;
+    margin-top: 15px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .order-details-layout {
+        grid-template-columns: 1fr; /* Stack on smaller screens */
+    }
+}
+
+/* --- New Status Badge for Cancelled Orders --- */
+.status-cancelled {
+    background-color: #dc3545; /* A strong red to indicate a final, stopped state */
+}
+
+/* --- General Button Style for Danger Actions --- */
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: #fff;
+}
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+/* --- Order Details Item List Refinement --- */
+
+
+/* Style the new link on the product name */
+.order-item-name-link {
+    font-weight: 600;
+    color: #282c3f;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+.order-item-name-link:hover {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+/* --- END OF MODIFICATIONS: static/css/style.css --- */
+
+/* --- Chatbot Order History Grid --- */
+.bot-order-grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 8px 0;
+}
+
+.bot-order-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 8px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.2s ease;
+}
+.bot-order-cell:hover {
+    background-color: #f9f9f9;
+}
+
+.bot-order-image {
+    width: 100%;
+    max-width: 80px;
+    height: auto;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+.bot-order-info {
+    font-size: 0.8rem;
+}
+.bot-order-info strong, .bot-order-info span {
+    display: block;
+}

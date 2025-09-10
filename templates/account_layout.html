@@ -1,0 +1,37 @@
+<!-- --- START OF NEW FILE: templates/account_layout.html --- -->
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <!-- The title will be set by the child template -->
+        <h1>{% block account_title %}{% endblock %}</h1>
+    </div>
+</div>
+
+<div class="container page-content">
+    <div class="account-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="account-sidebar">
+            <nav>
+                <ul>
+                    {% set active_page = request.endpoint %}
+                    <li><a href="{{ url_for('account') }}" class="{{ 'active' if active_page == 'account' else '' }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('my_orders') }}" class="{{ 'active' if active_page == 'my_orders' else '' }}">My Orders</a></li>
+                    <li><a href="{{ url_for('account_profile') }}" class="{{ 'active' if active_page == 'account_profile' else '' }}">Profile & Security</a></li>
+                    <li><a href="{{ url_for('account_addresses') }}" class="{{ 'active' if active_page == 'account_addresses' else '' }}">Address Book</a></li>
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="account-content">
+            {% block account_content %}{% endblock %}
+        </main>
+    </div>
+</div>
+{% endblock %}
+
+<!-- --- END OF NEW FILE: templates/account_layout.html --- -->

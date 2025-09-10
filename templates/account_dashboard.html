@@ -1,0 +1,36 @@
+<!-- --- START OF CORRECTED FILE: templates/account_dashboard.html --- -->
+
+{% extends "account_layout.html" %}
+
+{% block title %}Account Dashboard - AURA Apparel{% endblock %}
+{% block account_title %}Account Dashboard{% endblock %}
+
+{% block account_content %}
+    <h3>Welcome back, {{ current_user.first_name }}!</h3>
+    <p>From your account dashboard, you can view your recent orders, manage your shipping addresses, and edit your password and account details.</p>
+
+    <div class="dashboard-grid">
+        <div class="dashboard-card">
+            <h4>Last Order</h4>
+            {% if last_order %}
+                <p>Order #{{ last_order.id }} placed on {{ last_order.order_date.split(' ')[0] }}.</p>
+                <!-- MODIFIED: The url_for() now correctly points to 'order_details' -->
+                <a href="{{ url_for('order_details', order_id=last_order.id) }}" class="btn btn-secondary btn-small">View Order</a>
+            {% else %}
+                <p>You have no recent orders.</p>
+            {% endif %}
+        </div>
+        <div class="dashboard-card">
+            <h4>Default Address</h4>
+            {% if default_address %}
+                 <p>{{ default_address.address }}<br>{{ default_address.city }}, {{ default_address.state }}</p>
+                 <a href="{{ url_for('account_addresses') }}" class="btn btn-secondary btn-small">Manage Addresses</a>
+            {% else %}
+                <p>No default address set.</p>
+                 <a href="{{ url_for('account_addresses') }}" class="btn btn-secondary btn-small">Add Address</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+<!-- --- END OF CORRECTED FILE: templates/account_dashboard.html --- -->

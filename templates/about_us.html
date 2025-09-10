@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Our Story - AURA Apparel{% endblock %}
+
+{% block meta_description %}
+<meta name="description" content="Discover the story behind AURA Apparel. Our commitment to sustainable materials, ethical craftsmanship, and timeless design.">
+{% endblock %}
+
+{% block content %}
+<!-- ====================================================== -->
+<!--      DEFINITIVE "CENTERED NARRATIVE" PAGE LAYOUT       -->
+<!-- ====================================================== -->
+<div class="story-wrapper">
+
+    <!-- Header -->
+    <div class="story-text-block">
+        <h1 class="story-main-title">More Than a Label.</h1>
+        <p class="story-intro">AURA was born from a simple but powerful question: Can style and substance truly coexist? For too long, the modern man's wardrobe has been a contradiction—a choice between fleeting trends that harm the planet and sustainable options that lack a modern edge. We knew there had to be a better way.</p>
+    </div>
+
+    <!-- First Full-Bleed Image -->
+    <div class="story-image-block">
+        <img src="{{ url_for('static', filename='images/about-sustainability.png') }}" alt="A hand holding a raw organic cotton boll, representing sustainable materials.">
+    </div>
+
+    <!-- Text Block 2 -->
+    <div class="story-text-block">
+        <h3>Conscious Materials</h3>
+        <p>Our commitment begins with the thread. We meticulously source premium, low-impact materials like GOTS-certified organic cotton, innovative recycled fibers, and breathable linen. We choose fabrics that feel incredible against your skin and are gentle on the environment, ensuring every garment starts with a foundation of integrity.</p>
+    </div>
+    
+    <!-- Second Full-Bleed Image -->
+    <div class="story-image-block">
+        <img src="{{ url_for('static', filename='images/about-craftsmanship.png') }}" alt="A close-up of a tailor's hands stitching a shirt collar, representing ethical craftsmanship.">
+    </div>
+
+    <!-- Text Block 3 -->
+    <div class="story-text-block">
+        <h3>Ethical Craftsmanship</h3>
+        <p>A great design is meaningless if it's not made with respect. We partner exclusively with certified factories that share our commitment to fair wages and safe working conditions. Our transparent supply chain ensures that every person who touches an AURA garment is treated with dignity, skill, and respect.</p>
+    </div>
+
+    <!-- Third Full-Bleed Image -->
+    <div class="story-image-block">
+        <img src="{{ url_for('static', filename='images/about-design.png') }}" alt="A flat-lay of classic menswear items, representing timeless design.">
+    </div>
+
+    <!-- Text Block 4 -->
+    <div class="story-text-block">
+        <h3>Timeless by Design</h3>
+        <p>Fast fashion is a cycle of waste. We design to break it. Our collections are built around versatile, enduring pieces that move beyond fleeting trends. By focusing on superior fit and durable construction, we create clothing that is meant to be a staple in your wardrobe for years, not just a season.</p>
+    </div>
+
+</div>
+{% endblock %}

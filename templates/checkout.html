@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% block title %}Secure Checkout - AURA Apparel{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>Secure Checkout</h1>
+    </div>
+</div>
+
+<div class="container page-content">
+    <form action="{{ url_for('checkout') }}" method="POST">
+        <div class="checkout-layout">
+            <!-- Left Column: Shipping and Payment Forms -->
+            <main class="checkout-main">
+                <div class="checkout-card">
+                    <h3>Contact & Shipping</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="first_name">First Name</label>
+                            <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="last_name">Last Name</label>
+                            <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" value="{{ user.phone }}" class="form-control" required>
+                    </div>
+                    <hr style="margin: 25px 0;">
+                    <h4>Shipping Address</h4>
+                    {% if addresses %}
+                        {% for address in addresses %}
+                        <div class="address-option">
+                            <input type="radio" name="selected_address" value="{{ address.id }}" id="addr-{{ address.id }}" {% if address.is_default %}checked{% endif %} required>
+                            <label for="addr-{{ address.id }}">
+                                {{ address.address }}, {{ address.city }}, {{ address.state }} {{ address.zip_code }}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>You have no saved addresses. Please add one in your account dashboard.</p>
+                    {% endif %}
+                    <a href="{{ url_for('account_addresses') }}" class="edit-address-link">Manage Addresses</a>
+                </div>
+
+                <div class="checkout-card">
+                    <h3>Payment Method</h3>
+                    <ul class="nav nav-pills mb-3" id="payment-method-tabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="card-tab" data-bs-toggle="pill" data-bs-target="#card-payment-details" type="button" role="tab" aria-controls="card-payment-details" aria-selected="true">Credit/Debit Card</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="upi-tab" data-bs-toggle="pill" data-bs-target="#upi-payment-details" type="button" role="tab" aria-controls="upi-payment-details" aria-selected="false">UPI</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="cod-tab" data-bs-toggle="pill" data-bs-target="#cod-payment-details" type="button" role="tab" aria-controls="cod-payment-details" aria-selected="false">Cash on Delivery</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="payment-method-content">
+                        <!-- 1. Card Payment Details -->
+                        <div class="tab-pane fade show active" id="card-payment-details" role="tabpanel" aria-labelledby="card-tab">
+                            <input type="radio" id="card_select" name="payment_method" value="card" checked style="display:none;">
+                            <div class="form-group">
+                                <label for="card_number">Card Number</label>
+                                <input type="text" id="card_number" value="4242 4242 4242 4242" class="form-control" disabled>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="expiry">Expiry Date (MM/YY)</label>
+                                    <input type="text" id="expiry" value="12/28" class="form-control" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cvv">CVV</label>
+                                    <input type="text" id="cvv" value="123" class="form-control" disabled>
+                                </div>
+                            </div>
+                            <div class="card-icons">
+                                <img src="https://img.icons8.com/color/48/000000/visa.png" alt="Visa">
+                                <img src="https://img.icons8.com/color/48/000000/mastercard.png" alt="Mastercard">
+                                <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/rupay-logo-icon.png" alt="Rupay" style="height: 32px;">
+                                <img src="https://img.icons8.com/color/48/000000/discover.png" alt="Discover">
+                            </div>
+                        </div>
+                        <!-- 2. UPI Payment Details -->
+                        <div class="tab-pane fade" id="upi-payment-details" role="tabpanel" aria-labelledby="upi-tab">
+                            <input type="radio" id="upi_select" name="payment_method" value="upi" style="display:none;">
+                            <p>Select your UPI app to proceed with the payment.</p>
+                            <div class="upi-options">
+                                <div class="upi-option">
+                                    <input type="radio" id="paytm" name="upi_app" value="paytm" checked>
+                                    <label for="paytm"><img src="https://img.icons8.com/color/48/paytm.png" alt="Paytm"> Paytm</label>
+                                </div>
+                                <div class="upi-option">
+                                    <input type="radio" id="phonepe" name="upi_app" value="phonepe">
+                                    <label for="phonepe"><img src="https://www.logo.wine/a/logo/PhonePe/PhonePe-Logo.wine.svg" alt="PhonePe" style="height: 40px;"> PhonePe</label>
+                                </div>
+                                <div class="upi-option">
+                                    <input type="radio" id="gpay" name="upi_app" value="gpay">
+                                    <label for="gpay"><img src="https://img.icons8.com/color/48/google-pay.png" alt="Google Pay"> Google Pay</label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 3. Cash on Delivery Details -->
+                        <div class="tab-pane fade" id="cod-payment-details" role="tabpanel" aria-labelledby="cod-tab">
+                            <div class="cod-option">
+                                <input type="radio" id="cod_select" name="payment_method" value="cod">
+                                <!-- MODIFIED: Simplified the label text -->
+                                <label for="cod_select">Pay on Delivery</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <!-- Right Column: Order Summary -->
+            <aside class="checkout-sidebar">
+                <div class="order-summary-card">
+                    <h3>Order Summary</h3>
+                    <div class="summary-items">
+                        {% for item in cart_products %}
+                        <div class="summary-item">
+                            <img src="{{ url_for('static', filename='images/products/' + item.image_url) }}" alt="{{ item.name }}">
+                            <div class="summary-item-info">
+                                <span>{{ item.name }} (x{{ item.quantity }})</span>
+                                <small>Size: {{ item.size }}</small>
+                            </div>
+                            <span class="summary-item-price">₹{{ "%.0f"|format(item.subtotal) }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="summary-details">
+                        <div class="summary-row">
+                            <span>Total MRP</span>
+                            <span>₹{{ "%.0f"|format(total_mrp) }}</span>
+                        </div>
+                        <div class="summary-row discount">
+                            <span>Discount on MRP</span>
+                            <span>- ₹{{ "%.0f"|format(discount_on_mrp) }}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Platform Fee</span>
+                            <span>₹{{ "%.0f"|format(platform_fee) }}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Shipping Fee</span>
+                            {% if delivery_charge == 0 %}
+                                <span class="free-shipping">FREE</span>
+                            {% else %}
+                                <span>₹{{ "%.0f"|format(delivery_charge) }}</span>
+                            {% endif %}
+                        </div>
+                        
+                    </div>
+                    <div class="summary-total">
+                        <span>Total Amount</span>
+                        <strong>₹{{ "%.0f"|format(final_total_price) }}</strong>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-large">Place Order</button>
+                </div>
+            </aside>
+        </div>
+    </form>
+</div>
+{% endblock %}

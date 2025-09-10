@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}My Wishlist{% endblock %}
+{% block content %}
+<div class="page-header"><div class="container"><h1>My Wishlist</h1></div></div>
+<div class="container page-content">
+    {% if products %}
+        <div class="product-grid">
+            {% for product in products %}
+                <div class="product-card">
+                    <div class="product-image-container">
+                        <a href="{{ url_for('product_detail', product_id=product.id) }}"><img src="{{ url_for('static', filename='images/products/' + product.image_url) }}" alt="{{ product.name }}" class="product-thumb"></a>
+                        <button class="quick-view-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal" data-product-id="{{ product.id }}">Quick View</button>
+                        {% if product.rating %}
+                        <div class="rating-overlay">
+                            <span>{{ "%.1f"|format(product.rating) }}</span>
+                            <!-- THE KEY FIX: The color class is now on the icon -->
+                            {% if product.rating >= 4.0 %}<i class="ph-fill ph-star rating-good"></i>
+                            {% elif product.rating >= 3.0 %}<i class="ph-fill ph-star rating-average"></i>
+                            {% else %}<i class="ph-fill ph-star rating-bad"></i>
+                            {% endif %}
+                            <span>| {{ product.num_ratings }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="product-info">
+                        <h3><a href="{{ url_for('product_detail', product_id=product.id) }}">{{ product.brand }}</a></h3>
+                        <p><a href="{{ url_for('product_detail', product_id=product.id) }}">{{ product.name }}</a></p>
+                        <div class="price-box">
+                                <span class="sale-price">₹{{ "%.0f"|format(product.sale_price) }}</span>
+                                {% if product.discount_percent > 0 %}
+                                <span class="original-price">₹{{ "%.0f"|format(product.original_price) }}</span>
+                                <span class="discount-badge">({{ product.discount_percent }}% OFF)</span>
+                                {% endif %} 
+                            </div>
+                        <form action="{{ url_for('remove_from_wishlist', product_id=product.id) }}" method="POST" class="remove-wishlist-form">
+                            <button type="submit" class="btn btn-secondary btn-small">Remove</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="cart-empty">
+            <h3>Your wishlist is empty.</h3>
+            <a href="{{ url_for('product_listing') }}" class="btn btn-primary">Discover Products</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

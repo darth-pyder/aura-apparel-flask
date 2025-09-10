@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if active_filters.category %}{{ active_filters.category }}{% elif active_filters.brand %}{{ active_filters.brand }}{% else %}All Products{% endif %} - AURA Apparel
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <!-- Show a dynamic title based on what the user is viewing -->
+        {% if collection_title %}
+            <h1>{{ collection_title }}</h1>
+        {% elif search_query %}
+            <h1>Search Results for "{{ search_query }}"</h1>
+        {% elif active_filters.category %}
+            <h1>{{ active_filters.category }}</h1>
+        {% elif active_filters.brand %}
+            <h1>{{ active_filters.brand }}</h1>
+        {% else %}
+            <h1>All Products</h1>
+        {% endif %}
+    </div>
+</div>
+
+<div class="page-layout-container">
+    <!-- CORRECTED Sidebar for Filters -->
+    <aside class="sidebar">
+        {% if active_filters.category or active_filters.brand or active_filters.price or active_filters.rating or search_query %}
+            <div class="filter-group">
+                <a href="{{ url_for('product_listing') }}" class="btn-clear-filters">Clear All Filters</a>
+            </div>
+        {% endif %}
+        
+        <div class="filter-group">
+            <h4>Sort By</h4>
+            <div class="dropdown">
+                <button class="btn btn-light dropdown-toggle" type="button" id="sortDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% if sort_by == 'price_asc' %}Price: Low to High
+                    {% elif sort_by == 'price_desc' %}Price: High to Low
+                    {% elif sort_by == 'rating_desc' %}Highest Rated
+                    {% else %}Alphabetical{% endif %}
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="sortDropdownButton">
+                    <li><a class="dropdown-item" href="{{ url_for('product_listing', sort='name_asc', **active_filters) }}">Alphabetical</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('product_listing', sort='price_asc', **active_filters) }}">Price: Low to High</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('product_listing', sort='price_desc', **active_filters) }}">Price: High to Low</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('product_listing', sort='rating_desc', **active_filters) }}">Highest Rated</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="filter-group">
+            <h4>Price (INR)</h4>
+            <ul>
+                <li><a href="{{ url_for('product_listing', price='0-1000', brand=active_filters.brand, category=active_filters.category, rating=active_filters.rating) }}">Under ₹1,000</a></li>
+                <li><a href="{{ url_for('product_listing', price='1000-2500', brand=active_filters.brand, category=active_filters.category, rating=active_filters.rating) }}">₹1,000 to ₹2,500</a></li>
+                <li><a href="{{ url_for('product_listing', price='2500-5000', brand=active_filters.brand, category=active_filters.category, rating=active_filters.rating) }}">₹2,500 to ₹5,000</a></li>
+                <li><a href="{{ url_for('product_listing', price='5000-99999', brand=active_filters.brand, category=active_filters.category, rating=active_filters.rating) }}">Over ₹5,000</a></li>
+            </ul>
+        </div>
+        <div class="filter-group">
+            <h4>Rating</h4>
+            <ul>
+                <li><a href="{{ url_for('product_listing', rating='4.5', brand=active_filters.brand, category=active_filters.category, price=active_filters.price) }}">4.5 Stars & Up</a></li>
+                <li><a href="{{ url_for('product_listing', rating='4.0', brand=active_filters.brand, category=active_filters.category, price=active_filters.price) }}">4 Stars & Up</a></li>
+            </ul>
+        </div>
+        <div class="filter-group">
+            <h4>Category</h4>
+            <ul>
+                {% set filter_categories = ["Tops", "Bottoms", "Outerwear", "Activewear"] %}
+                {% for category in filter_categories %}
+                <li class="{{ 'active' if category == active_filters.category }}">
+                    <a href="{{ url_for('product_listing', category=category, brand=active_filters.brand, price=active_filters.price, rating=active_filters.rating) }}">{{ category }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="filter-group">
+            <h4>Brand</h4>
+            <ul>
+                {% for brand in filter_brands %}
+                <li class="{{ 'active' if brand == active_filters.brand }}">
+                    <a href="{{ url_for('product_listing', brand=brand, category=active_filters.category, price=active_filters.price, rating=active_filters.rating) }}">{{ brand }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </aside>
+
+    <!-- Main Content for Products -->
+    <main class="main-content">
+        {% if products %}
+            <div class="product-grid">
+                <!-- THIS IS THE NEW PRODUCT CARD STRUCTURE -->
+                {% for product in products %}
+                <div class="product-card">
+                    <div class="product-image-container">
+                        <!-- Link on the image -->
+                        <a href="{{ url_for('product_detail', product_id=product.id) }}">
+                            <img src="{{ url_for('static', filename='images/products/' + product.image_url) }}" alt="{{ product.name }}" class="product-thumb">
+                        </a>
+                        <!-- Quick View Button -->
+                        <button class="quick-view-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal" data-product-id="{{ product.id }}">
+                            Quick View
+                        </button>
+                        <!-- Rating Overlay -->
+                        {% if product.rating and product.num_ratings > 0 %}
+                        <div class="rating-overlay">
+                            <span>{{ "%.1f"|format(product.rating) }}</span>
+                            <!-- THE KEY FIX: The color class is now on the icon -->
+                            {% if product.rating >= 4.0 %}<i class="ph-fill ph-star rating-good"></i>
+                            {% elif product.rating >= 3.0 %}<i class="ph-fill ph-star rating-average"></i>
+                            {% else %}<i class="ph-fill ph-star rating-bad"></i>
+                            {% endif %}
+                            <span>| {{ product.num_ratings }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="product-info">
+                        <!-- Links on the text -->
+                        <h3 class="product-brand"><a href="{{ url_for('product_detail', product_id=product.id) }}">{{ product.brand }}</a></h3>
+                        <p class="product-name"><a href="{{ url_for('product_detail', product_id=product.id) }}">{{ product.name }}</a></p>
+                        <div class="price-box">
+                            <span class="sale-price">₹{{ "%.0f"|format(product.sale_price) }}</span>
+                            {% if product.discount_percent > 0 %}
+                            <span class="original-price">₹{{ "%.0f"|format(product.original_price) }}</span>
+                            <span class="discount-badge">({{ product.discount_percent }}% OFF)</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-results-container">
+                <h3>No products found</h3>
+                <p>We couldn't find any products matching your search for "{{ search_query }}". Try a different search term or clear the filters.</p>
+                <a href="{{ url_for('product_listing') }}" class="btn btn-primary">Clear Filters</a>
+            </div>
+        {% endif %}
+    </main>
+</div>
+{% endblock %}

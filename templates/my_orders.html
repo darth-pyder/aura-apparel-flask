@@ -1,0 +1,115 @@
+<!-- --- START OF MODIFICATIONS: templates/my_orders.html --- -->
+
+{% extends "account_layout.html" %}
+
+{% block title %}My Orders - AURA Apparel{% endblock %}
+{% block account_title %}My Orders{% endblock %}
+
+{% block account_content %}
+    {% if orders %}
+        {% for order in orders %}
+        <div class="order-card">
+            <!-- MODIFIED: The entire order-header structure is updated -->
+            <div class="order-header">
+                <!-- New container for all left-aligned items -->
+                <div class="order-header-left">
+                    <!-- 1. The Status Badge (Moved from the right side) -->
+                    {% if order.status == 'Cancelled' %}
+                        <div class="order-status-badge status-cancelled">Cancelled</div>
+                    {% elif order.status == 'Return Requested' %}
+                        <div class="order-status-badge status-return-requested">Return Requested</div>
+                    {% elif order.shipping_status == 'Delivered' %}
+                        <div class="order-status-badge status-completed">Completed</div>
+                    {% elif order.shipping_status == 'Processing' %}
+                        <div class="order-status-badge status-confirmed">Confirmed</div>
+                    {% else %}
+                        <div class="order-status-badge status-in-transit">{{ order.shipping_status }}</div>
+                    {% endif %}
+
+                    <!-- 2. The Order Info (Unchanged but now inside the left group) -->
+                    <div class="order-info">
+                        <strong>Order #{{ order.id }}</strong>
+                        <small>Placed on: {{ order.date }}</small>
+                    </div>
+                </div>
+
+                <!-- 3. The Order Total (Now a direct child, will be pushed to the right) -->
+                <div class="order-total">
+                    Total: ₹{{ "%.0f"|format(order.total) }}
+                </div>
+            </div>
+            
+            <div class="order-body">
+                <table class="order-items-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th style="text-align: center;">Quantity</th>
+                            <th style="text-align: right;">Price</th>
+                            <th></th> 
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.order_products %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td style="text-align: center;">{{ item.quantity }}</td>
+                            <td style="text-align: right;">₹{{ "%.0f"|format(item.price) }}</td>
+                            <td style="text-align: right;">
+                                {% if item.has_reviewed %}
+                                    <span class="review-submitted-text">Reviewed</span>
+                                {% else %}
+                                    <a href="{{ url_for('leave_review', order_item_id=item.order_item_id) }}" class="btn btn-secondary btn-small">Leave a Review</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- MODIFIED: The entire order-footer is updated for better status logic -->
+            <div class="order-footer">
+                <!-- Group 1: The Status (will be on the left) -->
+                <div class="order-footer-status">
+                    <!-- MODIFIED: This entire block contains the new descriptive text logic -->
+                    {% if order.status == 'Cancelled' %}
+                        <i class="ph-bold ph-x-circle"></i>
+                        <span>This order was cancelled.</span>
+                    {% elif order.status == 'Return Requested' %}
+                        <i class="ph-bold ph-arrow-counter-clockwise"></i>
+                        <span>Return process initiated.</span>
+                    {% elif order.shipping_status == 'Processing' %}
+                        <i class="ph-bold ph-package"></i>
+                        <span>Your order is being processed.</span>
+                    {% elif order.shipping_status == 'Shipped' %}
+                        <i class="ph-bold ph-truck"></i>
+                        <span>Your order has left our facility.</span>
+                    {% elif order.shipping_status == 'In Transit' %}
+                        <i class="ph-bold ph-truck"></i>
+                        <span>Your order is on its way to you.</span>
+                    {% elif order.shipping_status == 'Delivered' %}
+                        <i class="ph-bold ph-check-circle"></i>
+                        <span>Delivered successfully.</span>
+                    {% endif %}
+                </div>
+                
+                <!-- Group 2: The Buttons (will be on the right) -->
+                <div class="order-footer-actions">
+                    <!-- MODIFIED: The button will now be hidden if the order is cancelled -->
+                    {% if order.status != 'Cancelled' %}
+                        <a href="{{ url_for('order_details', order_id=order.id) }}" class="btn btn-secondary btn-small">View Details</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+    <div class="cart-empty">
+        <p>You have not placed any orders yet.</p>
+        <a href="{{ url_for('product_listing') }}" class="btn btn-primary">Start Shopping</a>
+    </div>
+    {% endif %}
+{% endblock %}
+
+<!-- --- END OF MODIFICATIONS: templates/my_orders.html --- -->

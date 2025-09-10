@@ -1,0 +1,174 @@
+<!-- --- START OF MODIFICATIONS: templates/order_status.html --- -->
+
+{% extends "base.html" %}
+
+{% block title %}Order Details - #{{ order.id }} - AURA Apparel{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>Order Details</h1>
+        <!-- MODIFIED: Use the new date object with the strftime filter for proper formatting -->
+        <p>Order #{{ order.id }} - Placed on {{ order_date.strftime('%B %d, %Y') }}</p>
+    </div>
+</div>
+
+<div class="container page-content">
+    <div class="order-details-layout">
+        <!-- Main Content: Items and Tracking -->
+        <main class="order-details-main">
+            <!-- Items List -->
+            <div class="order-details-card">
+                <h4>Items in this Order</h4>
+                {% for item in order_items %}
+                <!-- MODIFIED: The summary-item div is updated -->
+                <div class="summary-item">
+                    <!-- NEW: The image is now wrapped in a link and has a new class -->
+                    <a href="{{ url_for('product_detail', product_id=item.product_id) }}" class="order-item-image-link">
+                        <img src="{{ url_for('static', filename='images/products/' + item.image_url) }}" alt="{{ item.name }}" class="order-item-image">
+                    </a>
+                    <div class="summary-item-info">
+                        <!-- NEW: The product name is now also a link -->
+                        <a href="{{ url_for('product_detail', product_id=item.product_id) }}" class="order-item-name-link">{{ item.name }}</a>
+                        <small>Size: {{ item.size }} | Qty: {{ item.quantity }}</small>
+                    </div>
+                    <span class="summary-item-price">₹{{ "%.0f"|format(item.price_paid * item.quantity) }}</span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Tracking Information -->
+            <div class="order-details-card">
+                <h4>Tracking Information</h4>
+                <!-- The existing status timeline logic is moved here -->
+                {% if order.status == 'Return Requested' %}
+                    <h3>Return Process Initiated</h3>
+                    <p>We have received your return request. Our team will contact you via email within 2-3 business days.</p>
+                {% else %}
+                    <p><strong>Tracking Number:</strong> {{ order.tracking_number }}</p>
+                    <div class="status-timeline">
+                        <!-- Step 1: Order Confirmed -->
+                        <div class="timeline-item completed">
+                            <div class="timeline-icon">✓</div>
+                            <div class="timeline-content">
+                                <strong>Order Confirmed</strong>
+                                <p>{{ order.order_date }}</p>
+                            </div>
+                        </div>
+                        <!-- Step 2: Shipped -->
+                        <div class="timeline-item {{ 'completed' if order.shipping_status in ['Shipped', 'In Transit', 'Delivered'] else '' }}">
+                            <div class="timeline-icon">✓</div>
+                            <div class="timeline-content">
+                                <strong>Shipped</strong>
+                                <p>Your order has left our facility.</p>
+                            </div>
+                        </div>
+                        <!-- Step 3: In Transit -->
+                        <div class="timeline-item {{ 'completed' if order.shipping_status in ['In Transit', 'Delivered'] else '' }}">
+                            <div class="timeline-icon">✓</div>
+                            <div class="timeline-content">
+                                <strong>In Transit</strong>
+                                <p>Your order is on its way to you.</p>
+                            </div>
+                        </div>
+                        <!-- Step 4: Delivered -->
+                        <div class="timeline-item {{ 'completed' if order.shipping_status == 'Delivered' else '' }}">
+                            <div class="timeline-icon">✓</div>
+                            <div class="timeline-content">
+                                <strong>Delivered</strong>
+                                <p>Your order has been delivered.</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </main>
+        
+        <!-- Sidebar: Summaries and Actions -->
+        <aside class="order-details-sidebar">
+            <!-- Shipping Address -->
+            <div class="order-details-card">
+                <h4>Shipping Address</h4>
+                {% if shipping_address %}
+                <p>
+                    <strong>{{ current_user.first_name }} {{ current_user.last_name }}</strong><br>
+                    {{ shipping_address.address }}<br>
+                    {{ shipping_address.city }}, {{ shipping_address.state }} {{ shipping_address.zip_code }}
+                </p>
+                {% else %}
+                <p>Address not found.</p>
+                {% endif %}
+            </div>
+
+            <!-- Payment Summary -->
+            <div class="order-details-card">
+                <h4>Payment Summary</h4>
+                <div class="summary-details">
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span>₹{{ "%.0f"|format(subtotal) }}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Platform Fee</span>
+                        <span>₹{{ "%.0f"|format(platform_fee) }}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping Fee</span>
+                         {% if delivery_charge == 0 %}
+                            <span class="free-shipping">FREE</span>
+                        {% else %}
+                            <span>₹{{ "%.0f"|format(delivery_charge) }}</span>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- NEW: Display the payment method -->
+                    <div class="summary-row" style="padding-top: 12px; border-top: 1px solid #eee; margin-top: 12px;">
+                        <span>Payment Method</span>
+                        <span style="text-align: right;">
+                            {% if order.payment_method == 'card' %}
+                                Card ending in {{ order.payment_details }}
+                            {% elif order.payment_method == 'upi' %}
+                                UPI ({{ order.payment_details }})
+                            {% elif order.payment_method == 'cod' %}
+                                Cash on Delivery
+                            {% else %}
+                                {{ order.payment_method | capitalize }}
+                            {% endif %}
+                        </span> 
+                    </div>
+                </div>
+                <div class="summary-total">
+                    <span>Total Paid</span>
+                    <strong>₹{{ "%.0f"|format(order.total_price) }}</strong>
+                </div>
+            </div>
+
+            <!-- Return Action -->
+            <div class="order-details-card">
+                <h4>Need help with your order?</h4>
+                
+                <!-- MODIFIED: This block now contains all conditional actions -->
+                {% if order.status == 'Cancelled' %}
+                    <p>This order has been cancelled. The amount will be refunded if paid online (simulation).</p>
+                
+                {% elif order.status == 'Return Requested' %}
+                    <p>Your return request is currently being processed by our team.</p>
+                
+                {% elif order.shipping_status == 'Delivered' %}
+                    <p>If you're not satisfied with your items, you can request a return.</p>
+                    <a href="#" onclick="event.preventDefault(); document.getElementById('return-form-{{ order.id }}').submit();" class="btn btn-secondary btn-large">Request Return</a>
+                    <form id="return-form-{{ order.id }}" action="{{ url_for('request_return', order_id=order.id) }}" method="POST" style="display: none;"></form>
+                
+                {% else %}
+                    <!-- NEW: This is the condition for showing the Cancel button -->
+                    <p>If you've changed your mind, you can cancel this order before it is delivered.</p>
+                    <a href="#" onclick="event.preventDefault(); document.getElementById('cancel-form-{{ order.id }}').submit();" class="btn btn-danger btn-large">Cancel Order</a>
+                    <form id="cancel-form-{{ order.id }}" action="{{ url_for('cancel_order', order_id=order.id) }}" method="POST" style="display: none;"></form>
+                {% endif %}
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock %}
+
+<!-- --- END OF MODIFICATIONS: templates/order_status.html --- -->

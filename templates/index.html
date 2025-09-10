@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block title %}AURA Apparel - Sustainable Menswear{% endblock %}
+
+{% block content %}
+<!-- ====================================================== -->
+<!--      DEFINITIVE FINAL IMMERSIVE VIDEO HERO SECTION     -->
+<!-- ====================================================== -->
+<section class="hero">
+    <!-- The background video -->
+    <video playsinline autoplay muted loop id="hero-video">
+        <source src="{{ url_for('static', filename='videos/hero-background.mp4') }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    
+    <!-- The dark overlay -->
+    <div class="hero-overlay"></div>
+
+    <!-- The text and button content -->
+    <div class="container hero-container-new">
+        <div class="hero-content-new">
+            <h1 class="hero-headline">Style Meets Sustainability</h1>
+            <p class="hero-offer">Discover our new collection of eco-friendly apparel. Get 20% off your first order.</p>
+            <div class="hero-cta">
+                <a href="{{ url_for('product_listing') }}" class="glass-btn">{{ hero.cta_primary }}</a>
+                <a href="{{ url_for('about') }}" class="glass-btn secondary">{{ hero.cta_secondary }}</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================== -->
+<!--        NEW "BRAND PILLARS" SECTION             -->
+<!-- ============================================== -->
+<section class="brand-pillars">
+    <div class="container">
+        <!-- New Section Title -->
+        <div class="section-header">
+            <h2 class="section-title">Designed with Intention</h2>
+            <div class="brand-promise">
+                <p>When you choose AURA, you're not just buying a piece of clothing. You are investing in quality, supporting ethical practices, and joining a community that believes in dressing with intention. <strong>Every piece you buy is a step towards a healthier planet.</strong></p>
+            </div>
+        </div>
+
+        
+
+        <div class="pillars-grid">
+            <!-- Pillar 1: Conscious Materials -->
+            <div class="pillar-card">
+                <img src="{{ url_for('static', filename='images/pillar-sustainability.png') }}" alt="Sustainable materials">
+                <div class="pillar-content">
+                    <h3>Conscious Materials</h3>
+                    <p>We meticulously source premium, low-impact materials that feel incredible and are gentle on the environment.</p>
+                </div>
+            </div>
+            
+            <!-- Pillar 2: Ethical Craftsmanship -->
+            <div class="pillar-card">
+                <img src="{{ url_for('static', filename='images/pillar-craftsmanship.png') }}" alt="Ethical craftsmanship">
+                <div class="pillar-content">
+                    <h3>Ethical Craftsmanship</h3>
+                    <p>We partner exclusively with certified factories that share our commitment to fair wages and safe working conditions.</p>
+                </div>
+            </div>
+
+            <!-- Pillar 3: Timeless Design -->
+            <div class="pillar-card">
+                <img src="{{ url_for('static', filename='images/pillar-design.png') }}" alt="Timeless design">
+                <div class="pillar-content">
+                    <h3>Timeless by Design</h3>
+                    <p>We create versatile, enduring pieces that move beyond fleeting trends for a wardrobe that lasts.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="final-promise-intro">
+            <p>We believe fashion should feel good and do good. This is our commitment to you.</p>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ============================================== -->
+<!-- NEW FEATURED COLLECTION SECTION -->
+<!-- ============================================== -->
+<section class="featured-collection">
+    <div class="collection-content">
+        <h2 class="collection-title">The Desert Wanderer Collection</h2>
+        <p class="collection-description">Explore our curated selection of lightweight, breathable essentials designed for style and comfort in the heat.</p>
+        <a href="{{ url_for('desert_wanderer_collection') }}" class="button">Shop The Collection</a>
+    </div>
+</section>
+
+<!-- NEW: Shop by Category Grid -->
+<!-- ====================================================== -->
+<!--      DEFINITIVE FINAL IMMERSIVE CATEGORY SHOWCASE      -->
+<!-- ====================================================== -->
+<section class="category-showcase">
+    <div class="showcase-overlay"></div>
+    <div class="container">
+        <h2 class="section-title">Shop by Category</h2>
+        <div class="category-links-grid">
+            <!-- Link Box 1: Tops -->
+            <a href="{{ url_for('product_listing', category='Tops') }}" class="category-link-box">
+                <h3>Tops</h3>
+            </a>
+            <!-- Link Box 2: Bottoms -->
+            <a href="{{ url_for('product_listing', category='Bottoms') }}" class="category-link-box">
+                <h3>Bottoms</h3>
+            </a>
+            <!-- Link Box 3: Outerwear -->
+            <a href="{{ url_for('product_listing', category='Outerwear') }}" class="category-link-box">
+                <h3>Outerwear</h3>
+            </a>
+            <!-- Link Box 4: Activewear -->
+            <a href="{{ url_for('product_listing', category='Activewear') }}" class="category-link-box">
+                <h3>Activewear</h3>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products Section -->
+<section class="featured-products homepage-featured bg-light-grey">
+    <div class="container">
+        <h2 class="section-title">Top-Selling Products</h2>
+        <!-- DEFINITIVE CORRECTED SWIPER.JS CAROUSEL STRUCTURE -->
+        <div class="swiper product-carousel">
+            <div class="swiper-wrapper">
+                
+                {% for product in products %}
+                <!-- Each product card is a swiper-slide -->
+                <div class="swiper-slide">
+                    <!-- THE KEY FIX: The product-card is now the direct child, and the link is gone -->
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <!-- The image is now the link -->
+                            <a href="{{ url_for('product_detail', product_id=product.id) }}">
+                                <img src="{{ url_for('static', filename='images/products/' + product.image_url) }}" alt="{{ product.name }}" class="product-thumb">
+                            </a>
+                            <!-- The Quick View button is correctly placed here -->
+                            <button class="quick-view-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal" data-product-id="{{ product.id }}">
+                                Quick View
+                            </button>
+                            {% if product.rating and product.num_ratings > 0 %}
+                            <div class="rating-overlay">
+                                <span>{{ "%.1f"|format(product.rating) }}</span>
+                                <!-- THE KEY FIX: The color class is now on the icon -->
+                                {% if product.rating >= 4.0 %}<i class="ph-fill ph-star rating-good"></i>
+                                {% elif product.rating >= 3.0 %}<i class="ph-fill ph-star rating-average"></i>
+                                {% else %}<i class="ph-fill ph-star rating-bad"></i>
+                                {% endif %}
+                                <span>| {{ product.num_ratings }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="product-info">
+                            <!-- The text is now the link -->
+                            <h3 class="product-brand"><a href="{{ url_for('product_detail', product_id=product.id) }}">{{ product.brand }}</a></h3>
+                            <p class="product-name"><a href="{{ url_for('product_detail', product_id=product.id) }}">{{ product.name }}</a></p>
+                            <div class="price-box">
+                                <span class="sale-price">₹{{ "%.0f"|format(product.sale_price) }}</span>
+                                {% if product.discount_percent > 0 %}
+                                <span class="original-price">₹{{ "%.0f"|format(product.original_price) }}</span>
+                                <span class="discount-badge">({{ product.discount_percent }}% OFF)</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+            <!-- Navigation Arrows -->
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

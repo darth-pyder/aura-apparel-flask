@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} - AURA Apparel{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>{{ title }}</h1>
+    </div>
+</div>
+
+<div class="container page-content" style="flex-direction: column;">
+    <div class="static-content">
+        {% if content_key == "about" %}
+            <!-- ====================================================== -->
+            <!--      DEFINITIVE FINAL "OUR STORY" PAGE LAYOUT          -->
+            <!-- ====================================================== -->
+            <div class="story-header">
+                <h2 class="section-title">More Than a Label.</h2>
+                <p class="section-subtitle">Redefining the modern man's wardrobe through style, substance, and sustainability.</p>
+            </div>
+
+            <div class="container story-container">
+                <!-- Pillar 1: Conscious Materials -->
+                <div class="pillar-item">
+                    <div class="pillar-image">
+                        <img src="{{ url_for('static', filename='images/about-sustainability.png') }}" alt="A hand holding a raw organic cotton boll, representing sustainable materials.">
+                    </div>
+                    <div class="pillar-text">
+                        <h3>Conscious Materials</h3>
+                        <p>Our commitment begins with the thread. We meticulously source premium, low-impact materials like GOTS-certified organic cotton, innovative recycled fibers, and breathable linen. We choose fabrics that feel incredible against your skin and are gentle on the environment, ensuring every garment starts with a foundation of integrity.</p>
+                    </div>
+                </div>
+                
+                <!-- Pillar 2: Ethical Craftsmanship -->
+                <div class="pillar-item image-right"> <!-- Note the "image-right" class -->
+                    <div class="pillar-image">
+                        <img src="{{ url_for('static', filename='images/about-craftsmanship.png') }}" alt="A close-up of a tailor's hands stitching a shirt collar, representing ethical craftsmanship.">
+                    </div>
+                    <div class="pillar-text">
+                        <h3>Ethical Craftsmanship</h3>
+                        <p>A great design is meaningless if it's not made with respect. We partner exclusively with certified factories that share our commitment to fair wages and safe working conditions. Our transparent supply chain ensures that every person who touches an AURA garment is treated with dignity, skill, and respect.</p>
+                    </div>
+                </div>
+
+                <!-- Pillar 3: Timeless Design -->
+                <div class="pillar-item">
+                    <div class="pillar-image">
+                        <img src="{{ url_for('static', filename='images/about-design.png') }}" alt="A flat-lay of classic menswear items, representing timeless design.">
+                    </div>
+                    <div class="pillar-text">
+                        <h3>Timeless by Design</h3>
+                        <p>Fast fashion is a cycle of waste. We design to break it. Our collections are built around versatile, enduring pieces that move beyond fleeting trends. By focusing on superior fit and durable construction, we create clothing that is meant to be a staple in your wardrobe for years, not just a season.</p>
+                    </div>
+                </div>
+            </div>
+        
+        {% elif content_key == "contact" %}
+            <!-- <h2>Get In Touch</h2> -->
+            <p>Have a question about your order, our products, or our mission? We'd love to hear from you.</p>
+            <ul>
+                <li><strong>Email:</strong> <a href="mailto:support@auraapparel.com">support@auraapparel.com</a></li>
+                <li><strong>Hours:</strong> Monday - Friday, 9:00 AM - 5:00 PM (EST)</li>
+            </ul>
+            <p>For press and media inquiries, please contact <a href="mailto:media@auraapparel.com">media@auraapparel.com</a>.</p>
+
+        {% elif content_key == "privacy" %}
+            <!-- <h2>Privacy Policy</h2> -->
+            <p>Your privacy is important to us. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website.</p>
+            <p><strong>Information We Collect:</strong> We may collect personal information such as your name, shipping address, email address, and payment information when you place an order. We also collect non-personal information, such as browser type and pages viewed, to improve our site.</p>
+            <p><strong>How We Use Your Information:</strong> We use your information to process transactions, send you order confirmations, and improve our website and services. We will not sell or rent your personal information to third parties.</p>
+
+        {% elif content_key == "return" %}
+            <!-- <h2>Return Policy</h2> -->
+            <p>We want you to be completely satisfied with your purchase. If you're not, we're here to help.</p>
+            <p><strong>30-Day Returns:</strong> You can return any unworn, unwashed, or defective merchandise within 30 days of the order shipment date. Returns must be in their original condition with all tags attached.</p>
+            <p><strong>How to Start a Return:</strong> To initiate a return, please log into your account, go to your "My Orders" page, and select the "Return an Item" option next to your order. (This feature will be built in the next step!)</p>
+            <p><strong>Refunds:</strong> Once your return is received and inspected, we will process your refund to the original method of payment.</p>
+        {% elif content_key == "faq" %}
+            <!-- <h2>Frequently Asked Questions</h2> -->
+            
+            <div class="faq-item">
+                <h3>How do I find my correct size?</h3>
+                <p>We recommend checking the size chart available on every product page. Our slim fit items run true to size, while our relaxed fit items offer a bit more room. If you're between sizes, we suggest sizing up for a more comfortable fit.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>How long does shipping take?</h3>
+                <p>Standard domestic shipping typically takes 5-7 business days from the time your order is processed. You will receive a confirmation email with tracking information as soon as your order has shipped.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>What is your return policy?</h3>
+                <p>We offer a 30-day return window for all unworn, unwashed, and defective items with tags still attached. You can learn more and start a return from our <a href="{{ url_for('return_policy') }}">Return Policy</a> page.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>Are your products really sustainable?</h3>
+                <p>Yes. Sustainability is at the core of everything we do at AURA. We prioritize the use of organic and recycled materials, partner with ethically certified factories, and are committed to minimizing our environmental impact. You can read more about our mission on our <a href="{{ url_for('about') }}">About Us</a> page.</p>
+            </div>
+        
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

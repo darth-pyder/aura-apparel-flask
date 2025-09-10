@@ -1,0 +1,126 @@
+<!-- --- START OF MODIFICATIONS: templates/cart.html --- -->
+
+{% extends "base.html" %}
+
+{% block title %}Your Shopping Cart - AURA Apparel{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>Your Shopping Cart</h1>
+    </div>
+</div>
+
+<div class="container page-content cart-page-container">
+    {% if cart_products %}
+    <div class="cart-layout">
+        <div class="cart-items">
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th class="col-product">Product</th>
+                        <th class="col-price">Price</th>
+                        <th class="col-quantity">Quantity</th> <!-- RESTORED: Quantity column -->
+                        <th class="col-subtotal">Subtotal</th>
+                        <th class="col-remove"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_products %}
+                    <!-- The form now wraps the entire table row to capture all inputs -->
+                    <form action="{{ url_for('update_cart', cart_key=item.cart_key) }}" method="POST">
+                    <tr>
+                        <td class="col-product">
+                            <div class="product-cell">
+                                <!-- MODIFIED: Larger image in a container -->
+                                <a href="{{ url_for('product_detail', product_id=item.id) }}" class="cart-product-image-link">
+                                    <img src="{{ url_for('static', filename='images/products/' + item.image_url) }}" alt="{{ item.name }}" class="cart-product-image">
+                                </a>
+                                <div class="cart-product-details">
+                                    <span>{{ item.name }}</span>
+                                    <!-- NEW: Size selector is now here -->
+                                    <div class="cart-size-selector">
+                                        <label for="inventory_id_{{ item.id }}">Size:</label>
+                                        <select name="inventory_id" id="inventory_id_{{ item.id }}" class="form-select form-select-sm">
+                                            {% for inv in item.available_inventory %}
+                                                <option value="{{ inv.id }}" {% if inv.id == item.inventory_id %}selected{% endif %} {% if inv.stock_quantity == 0 %}disabled{% endif %}>
+                                                    {{ inv.size }} {% if inv.stock_quantity == 0 %}(Out of Stock){% endif %}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="col-price">
+                            <div class="price-cell">
+                                <span class="sale-price">₹{{ "%.0f"|format(item.sale_price) }}</span>
+                                {% if item.discount_percent > 0 %}
+                                <span class="original-price">₹{{ "%.0f"|format(item.original_price) }}</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="col-quantity">
+                            <!-- MODIFIED: Restored quantity input and update button -->
+                            <div class="cart-quantity-controls">
+                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="10" class="form-control form-control-sm">
+                                <button type="submit" class="btn btn-secondary btn-sm">Update</button>
+                            </div>
+                        </td>
+                        <td class="col-subtotal">
+                            <strong>₹{{ "%.0f"|format(item.subtotal) }}</strong>
+                        </td>
+                        <td class="col-remove">
+                            <!-- This form is separate as it performs a different action -->
+                            <form action="{{ url_for('remove_from_cart', cart_key=item.cart_key) }}" method="POST">
+                                <button type="submit" class="btn-remove">&times;</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </form> <!-- The form for the row ends here -->
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="cart-summary">
+            <h3>Cart Summary</h3>
+            <!-- NEW: Detailed cost breakdown -->
+            <div class="summary-row">
+                <span>Total MRP</span>
+                <span>₹{{ "%.0f"|format(total_mrp) }}</span>
+            </div>
+            <div class="summary-row discount">
+                <span>Discount on MRP</span>
+                <span>- ₹{{ "%.0f"|format(discount_on_mrp) }}</span>
+            </div>
+            <div class="summary-row">
+                <span>Platform Fee</span>
+                <span>₹{{ "%.0f"|format(platform_fee) }}</span>
+            </div>
+            <div class="summary-row">
+                <span>Shipping Fee</span>
+                {% if delivery_charge == 0 %}
+                    <span class="free-shipping">FREE</span>
+                {% else %}
+                    <span>₹{{ "%.0f"|format(delivery_charge) }}</span>
+                {% endif %}
+            </div>
+            <hr>
+            <!-- MODIFIED: The final total row -->
+            <div class="summary-row total">
+                <strong>Total Amount</strong>
+                <strong>₹{{ "%.0f"|format(final_total_price) }}</strong>
+            </div>
+            <a href="{{ url_for('checkout') }}" class="btn btn-primary btn-large">Proceed to Checkout</a>
+        </div>
+    </div>
+    {% else %}
+    <div class="cart-empty">
+        <p>Your cart is currently empty.</p>
+        <a href="{{ url_for('product_listing') }}" class="btn btn-primary">Continue Shopping</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+<!-- --- END OF MODIFICATIONS: templates/cart.html --- -->
