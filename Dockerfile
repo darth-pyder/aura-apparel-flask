@@ -1,27 +1,16 @@
-# Use an official Python runtime as a parent image
+# Use an official, slim Python runtime
 FROM python:3.11-slim
 
-# Set the working directory in the container
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the requirements file into the container
+# Copy the requirements file and install dependencies
 COPY requirements.txt .
-
-# Install any needed system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends gcc
-
-# Install the Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
-
-# Download the spaCy model
-RUN python -m spacy download en_core_web_sm
 
 # Copy the rest of your application code into the container
 COPY . .
 
-# Generate the database when the container builds
-RUN python setup_database.py
-
-# Command to run your app
-# We use gunicorn, a production-ready server, with a specific worker class for SocketIO
-CMD ["gunicorn", "--worker-class", "eventlet", "-w", "1", "wsgi:app"]
+# This command tells Render how to start your web server
+# It uses gunicorn, a production-ready server, with a special worker for SocketIO
+CMD ["gunicorn", "-w", "1", "-k", "eventlet", "app:app"]

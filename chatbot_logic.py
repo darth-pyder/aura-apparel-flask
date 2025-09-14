@@ -17,7 +17,8 @@ safety_settings = {
     HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
 }
 model = genai.GenerativeModel('gemini-1.5-flash-latest', safety_settings=safety_settings)
-DATABASE = 'products.db'
+INSTANCE_FOLDER_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'instance')
+DATABASE = os.path.join(INSTANCE_FOLDER_PATH, 'products.db')
 
 # --- 2. DATABASE TOOLS (Unchanged) ---
 def get_db_connection():

@@ -1,5 +1,6 @@
 import sqlite3
 import random
+import os
 from werkzeug.security import generate_password_hash
 from datetime import datetime, timedelta
 
@@ -90,9 +91,14 @@ def create_dedicated_test_user(cursor):
 
 # --- Main Database Setup Function ---
 def setup_database():
-    conn = sqlite3.connect('products.db')
+    INSTANCE_FOLDER_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'instance')
+    DATABASE_PATH = os.path.join(INSTANCE_FOLDER_PATH, 'products.db')
+
+    # Create the instance folder if it doesn't exist
+    os.makedirs(INSTANCE_FOLDER_PATH, exist_ok=True)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
+    conn = sqlite3.connect(DATABASE_PATH)
 
     # Drop all tables
     print("Dropping old tables if they exist...")
