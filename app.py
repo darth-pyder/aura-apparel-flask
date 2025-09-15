@@ -7,6 +7,8 @@ from flask import Flask, render_template, g, request, redirect, url_for, flash, 
 from flask_socketio import SocketIO
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+import psycopg2
+import psycopg2.extras
 
 # Import your custom modules
 from chatbot_logic import get_rag_response
@@ -48,7 +50,7 @@ class User(UserMixin):
 @login_manager.user_loader
 def load_user(user_id):
     db = get_db()
-    user_data = db.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()
+    user_data = db.execute("SELECT * FROM users WHERE id = %s", (user_id,)).fetchone()
     if user_data:
         # MODIFIED: Pass the first_name when creating the User object
         return User(id=user_data['id'], 
@@ -62,8 +64,7 @@ def load_user(user_id):
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
-        db.row_factory = sqlite3.Row
+        db = g._database = psycopg2.connect(os.getenv("DATABASE_URL"))
     return db
 
 @app.teardown_appcontext
@@ -136,7 +137,7 @@ def desert_wanderer_collection():
     collection_ids = [18, 24, 25, 31, 37] # IDs for linen shirt, chinos, shorts, leather jacket
     
     # Create the correct number of placeholders for the SQL query
-    placeholders = ','.join('?' for _ in collection_ids)
+    placeholders = ','.join('%s' for _ in collection_ids)
     
     # Fetch the products from the database
     collection_products_data = db.execute(
@@ -188,9 +189,9 @@ def product_listing():
             # Handle plural vs singular by removing 's' if it exists
             singular_word = word.rstrip('s')
             param = f"%{singular_word}%"
-            score_clauses.append("(CASE WHEN name LIKE ? THEN 10 ELSE 0 END)")
-            score_clauses.append("(CASE WHEN brand LIKE ? THEN 5 ELSE 0 END)")
-            score_clauses.append("(CASE WHEN description LIKE ? THEN 1 ELSE 0 END)")
+            score_clauses.append("(CASE WHEN name LIKE %s THEN 10 ELSE 0 END)")
+            score_clauses.append("(CASE WHEN brand LIKE %s THEN 5 ELSE 0 END)")
+            score_clauses.append("(CASE WHEN description LIKE %s THEN 1 ELSE 0 END)")
             params.extend([param, param, param])
         relevance_score_sql = " + ".join(score_clauses)
         base_query += f", ({relevance_score_sql}) as relevance_score"
@@ -199,14 +200,14 @@ def product_listing():
     query = f"{base_query} FROM products"
     # --- END OF NEW SEARCH LOGIC ---
 
-    if category: conditions.append("category = ?"); params.append(category)
-    if brand: conditions.append("brand = ?"); params.append(brand)
-    if rating: conditions.append("rating >= ?"); params.append(float(rating))
+    if category: conditions.append("category = %s"); params.append(category)
+    if brand: conditions.append("brand = %s"); params.append(brand)
+    if rating: conditions.append("rating >= %s"); params.append(float(rating))
     
     if price_range:
         # We need to add the sale_price calculation to the subquery for filtering
         low, high = price_range.split('-')
-        conditions.append("(original_price * (1 - discount_percent / 100.0)) BETWEEN ? AND ?")
+        conditions.append("(original_price * (1 - discount_percent / 100.0)) BETWEEN %s AND %s")
         params.extend([int(low), int(high)])
 
     if conditions:
@@ -240,14 +241,14 @@ REVIEWS_PER_PAGE = 4
 @app.route('/product/<int:product_id>')
 def product_detail(product_id):
     db = get_db()
-    product_data = db.execute("SELECT * FROM products WHERE id = ?", (product_id,)).fetchone()
+    product_data = db.execute("SELECT * FROM products WHERE id = %s", (product_id,)).fetchone()
     if not product_data: return "Product not found", 404
     
     product = process_products([product_data])[0]
     
     # --- NEW: Fetch inventory for this product ---
     inventory = db.execute(
-        "SELECT id, size, stock_quantity FROM inventory WHERE product_id = ? ORDER BY size",
+        "SELECT id, size, stock_quantity FROM inventory WHERE product_id = %s ORDER BY size",
         (product_id,)
     ).fetchall()
 
@@ -261,13 +262,13 @@ def product_detail(product_id):
     reviews = db.execute(f"""
         SELECT r.rating, r.comment, u.username 
         FROM reviews r JOIN users u ON r.user_id = u.id 
-        WHERE r.product_id = ? {order_clause} LIMIT ?
+        WHERE r.product_id = %s {order_clause} LIMIT %s
     """, (product_id, REVIEWS_PER_PAGE)).fetchall()
     
     # --- THIS IS THE NEW LOGIC ---
     # Fetch 4 other products from the same category to recommend
     recommended_products_data = db.execute(
-        "SELECT * FROM products WHERE category = ? AND id != ? ORDER BY RANDOM() LIMIT 4",
+        "SELECT * FROM products WHERE category = %s AND id != %s ORDER BY RANDOM() LIMIT 4",
         (product['category'], product_id)
     ).fetchall()
     recommended_products = process_products(recommended_products_data)
@@ -280,7 +281,7 @@ def product_detail(product_id):
     if current_user.is_authenticated:
         db = get_db() # Get the database connection
         is_in_wishlist_data = db.execute(
-            "SELECT id FROM wishlist WHERE user_id = ? AND product_id = ?",
+            "SELECT id FROM wishlist WHERE user_id = %s AND product_id = %s",
             (current_user.id, product_id)
         ).fetchone()
         if is_in_wishlist_data: is_in_wishlist = True
@@ -303,7 +304,7 @@ def product_detail(product_id):
 @app.route('/quick_view/<int:product_id>')
 def quick_view(product_id):
     db = get_db()
-    product_data = db.execute("SELECT * FROM products WHERE id = ?", (product_id,)).fetchone()
+    product_data = db.execute("SELECT * FROM products WHERE id = %s", (product_id,)).fetchone()
     if not product_data:
         return jsonify(error="Product not found"), 404
     
@@ -327,8 +328,8 @@ def live_search():
     params = []
     for word in search_words:
         param = f"%{word}%"
-        score_clauses.append("(CASE WHEN name LIKE ? THEN 10 ELSE 0 END)")
-        score_clauses.append("(CASE WHEN brand LIKE ? THEN 5 ELSE 0 END)")
+        score_clauses.append("(CASE WHEN name LIKE %s THEN 10 ELSE 0 END)")
+        score_clauses.append("(CASE WHEN brand LIKE %s THEN 5 ELSE 0 END)")
         params.extend([param, param])
 
     relevance_score_sql = " + ".join(score_clauses)
@@ -396,7 +397,7 @@ def track_order():
             db = get_db()
             # Try to find the order by its ID
             order_details = db.execute(
-                "SELECT id, order_date, shipping_status, tracking_number FROM orders WHERE id = ?",
+                "SELECT id, order_date, shipping_status, tracking_number FROM orders WHERE id = %s",
                 (order_id,)
             ).fetchone()
             
@@ -411,7 +412,7 @@ def track_order():
 @login_required
 def order_details(order_id):
     db = get_db()
-    order = db.execute("SELECT * FROM orders WHERE id = ? AND user_id = ?", (order_id, current_user.id)).fetchone()
+    order = db.execute("SELECT * FROM orders WHERE id = %s AND user_id = %s", (order_id, current_user.id)).fetchone()
     
     if order is None:
         flash("Order not found or you do not have permission to view it.", "error")
@@ -420,13 +421,13 @@ def order_details(order_id):
     order_items_data = db.execute("""
         SELECT p.id as product_id, p.name, p.image_url, oi.quantity, oi.price as price_paid, oi.size
         FROM order_items oi JOIN products p ON oi.product_id = p.id
-        WHERE oi.order_id = ?
+        WHERE oi.order_id = %s
     """, (order_id,)).fetchall()
     order_items = [dict(row) for row in order_items_data]
 
     # THE FIX for "Address Not Found": Fetch the specific address linked to the order
     shipping_address = db.execute("""
-        SELECT * FROM addresses WHERE id = ?
+        SELECT * FROM addresses WHERE id = %s
     """, (order['shipping_address_id'],)).fetchone()
 
     subtotal = sum(item['price_paid'] * item['quantity'] for item in order_items)
@@ -463,8 +464,8 @@ def register():
         last_name = request.form['last_name']
         phone = request.form['phone']
 
-        user_by_username = db.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
-        user_by_email = db.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone()
+        user_by_username = db.execute("SELECT * FROM users WHERE username = %s", (username,)).fetchone()
+        user_by_email = db.execute("SELECT * FROM users WHERE email = %s", (email,)).fetchone()
 
         if user_by_username:
             flash('Username already exists. Please choose a different one.', 'error')
@@ -473,7 +474,7 @@ def register():
         else:
             password_hash = generate_password_hash(password)
             # MODIFIED: Insert statement now includes the new required fields
-            db.execute("INSERT INTO users (username, email, password_hash, first_name, last_name, phone) VALUES (?, ?, ?, ?, ?, ?)", 
+            db.execute("INSERT INTO users (username, email, password_hash, first_name, last_name, phone) VALUES (%s, %s, %s, %s, %s, %s)", 
                        (username, email, password_hash, first_name, last_name, phone))
             db.commit()
             flash('Registration successful! Please log in.', 'success')
@@ -509,7 +510,7 @@ def logout():
 def db_get_user(username):
     """Helper function to get user from DB."""
     db = get_db()
-    user_data = db.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
+    user_data = db.execute("SELECT * FROM users WHERE username = %s", (username,)).fetchone()
     if user_data:
         # MODIFIED: Pass the first_name when creating the User object here as well
         return User(id=user_data['id'], 
@@ -526,7 +527,7 @@ def my_orders():
     
     # Fetch all orders for the current user, newest first
     user_orders_data = db.execute(
-        "SELECT * FROM orders WHERE user_id = ? ORDER BY order_date DESC",
+        "SELECT * FROM orders WHERE user_id = %s ORDER BY order_date DESC",
         (current_user.id,)
     ).fetchall()
     
@@ -537,7 +538,7 @@ def my_orders():
             SELECT p.name, oi.quantity, oi.price, oi.id as order_item_id, oi.has_reviewed
             FROM order_items oi
             JOIN products p ON oi.product_id = p.id
-            WHERE oi.order_id = ?
+            WHERE oi.order_id = %s
         """, (order_data['id'],)).fetchall()
         
         orders.append({
@@ -559,8 +560,8 @@ def my_orders():
 def account():
     db = get_db()
     # Fetch the default address and the most recent order for the dashboard summary
-    default_address = db.execute("SELECT * FROM addresses WHERE user_id = ? AND is_default = 1", (current_user.id,)).fetchone()
-    last_order = db.execute("SELECT * FROM orders WHERE user_id = ? ORDER BY order_date DESC LIMIT 1", (current_user.id,)).fetchone()
+    default_address = db.execute("SELECT * FROM addresses WHERE user_id = %s AND is_default = 1", (current_user.id,)).fetchone()
+    last_order = db.execute("SELECT * FROM orders WHERE user_id = %s ORDER BY order_date DESC LIMIT 1", (current_user.id,)).fetchone()
     
     navigation_links = generate_content("navigation_links")
     return render_template('account_dashboard.html', 
@@ -579,7 +580,7 @@ def account_profile():
             first_name = request.form.get('first_name')
             last_name = request.form.get('last_name')
             phone = request.form.get('phone')
-            db.execute("UPDATE users SET first_name = ?, last_name = ?, phone = ? WHERE id = ?",
+            db.execute("UPDATE users SET first_name = %s, last_name = %s, phone = %s WHERE id = %s",
                        (first_name, last_name, phone, current_user.id))
             db.commit()
             flash('Your personal details have been updated.', 'success')
@@ -589,7 +590,7 @@ def account_profile():
             new_password = request.form.get('new_password')
             confirm_password = request.form.get('confirm_password')
 
-            user = db.execute("SELECT password_hash FROM users WHERE id = ?", (current_user.id,)).fetchone()
+            user = db.execute("SELECT password_hash FROM users WHERE id = %s", (current_user.id,)).fetchone()
 
             if not check_password_hash(user['password_hash'], current_password):
                 flash('Your current password does not match.', 'error')
@@ -597,13 +598,13 @@ def account_profile():
                 flash('New passwords do not match.', 'error')
             else:
                 new_password_hash = generate_password_hash(new_password)
-                db.execute("UPDATE users SET password_hash = ? WHERE id = ?", (new_password_hash, current_user.id))
+                db.execute("UPDATE users SET password_hash = %s WHERE id = %s", (new_password_hash, current_user.id))
                 db.commit()
                 flash('Your password has been changed successfully.', 'success')
 
         return redirect(url_for('account_profile'))
 
-    user_data = db.execute("SELECT * FROM users WHERE id = ?", (current_user.id,)).fetchone()
+    user_data = db.execute("SELECT * FROM users WHERE id = %s", (current_user.id,)).fetchone()
     navigation_links = generate_content("navigation_links")
     return render_template('account_profile.html', navigation_links=navigation_links, user=user_data)
 
@@ -616,26 +617,26 @@ def account_addresses():
         action = request.form.get('action')
 
         if action == 'add':
-            db.execute("INSERT INTO addresses (user_id, address, city, state, zip_code) VALUES (?, ?, ?, ?, ?)",
+            db.execute("INSERT INTO addresses (user_id, address, city, state, zip_code) VALUES (%s, %s, %s, %s, %s)",
                        (current_user.id, request.form.get('address'), request.form.get('city'), 
                         request.form.get('state'), request.form.get('zip_code')))
             flash('New address added.', 'success')
 
         elif action == 'delete':
             address_id = request.form.get('address_id')
-            db.execute("DELETE FROM addresses WHERE id = ? AND user_id = ?", (address_id, current_user.id))
+            db.execute("DELETE FROM addresses WHERE id = %s AND user_id = %s", (address_id, current_user.id))
             flash('Address removed.', 'success')
 
         elif action == 'set_default':
             address_id = request.form.get('address_id')
-            db.execute("UPDATE addresses SET is_default = 0 WHERE user_id = ?", (current_user.id,))
-            db.execute("UPDATE addresses SET is_default = 1 WHERE id = ? AND user_id = ?", (address_id, current_user.id))
+            db.execute("UPDATE addresses SET is_default = 0 WHERE user_id = %s", (current_user.id,))
+            db.execute("UPDATE addresses SET is_default = 1 WHERE id = %s AND user_id = %s", (address_id, current_user.id))
             flash('Default address updated.', 'success')
             
         db.commit()
         return redirect(url_for('account_addresses'))
 
-    addresses = db.execute("SELECT * FROM addresses WHERE user_id = ? ORDER BY is_default DESC", (current_user.id,)).fetchall()
+    addresses = db.execute("SELECT * FROM addresses WHERE user_id = %s ORDER BY is_default DESC", (current_user.id,)).fetchall()
     navigation_links = generate_content("navigation_links")
     return render_template('account_addresses.html', navigation_links=navigation_links, addresses=addresses)
 
@@ -645,7 +646,7 @@ def account_addresses():
 @login_required
 def wishlist():
     db = get_db()
-    wishlist_items_data = db.execute("SELECT p.* FROM products p JOIN wishlist w ON p.id = w.product_id WHERE w.user_id = ?", (current_user.id,)).fetchall()
+    wishlist_items_data = db.execute("SELECT p.* FROM products p JOIN wishlist w ON p.id = w.product_id WHERE w.user_id = %s", (current_user.id,)).fetchall()
     wishlist_items = process_products(wishlist_items_data)
     return render_template('wishlist.html', products=wishlist_items)
 
@@ -655,7 +656,7 @@ def add_to_wishlist(product_id):
     db = get_db()
     try:
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        db.execute("INSERT INTO wishlist (user_id, product_id, added_date) VALUES (?, ?, ?)", (current_user.id, product_id, current_time))
+        db.execute("INSERT INTO wishlist (user_id, product_id, added_date) VALUES (%s, %s, %s)", (current_user.id, product_id, current_time))
         db.commit()
         flash('Item added to your wishlist!', 'success')
     except sqlite3.IntegrityError:
@@ -666,7 +667,7 @@ def add_to_wishlist(product_id):
 @login_required
 def remove_from_wishlist(product_id):
     db = get_db()
-    db.execute("DELETE FROM wishlist WHERE user_id = ? AND product_id = ?", (current_user.id, product_id))
+    db.execute("DELETE FROM wishlist WHERE user_id = %s AND product_id = %s", (current_user.id, product_id))
     db.commit()
     flash('Item removed from your wishlist.', 'success')
     return redirect(request.referrer)
@@ -679,7 +680,7 @@ def leave_review(order_item_id):
         SELECT oi.id, oi.product_id, p.name FROM order_items oi
         JOIN orders o ON oi.order_id = o.id
         JOIN products p ON oi.product_id = p.id
-        WHERE oi.id = ? AND o.user_id = ? AND oi.has_reviewed = 0
+        WHERE oi.id = %s AND o.user_id = %s AND oi.has_reviewed = 0
     """, (order_item_id, current_user.id)).fetchone()
     
     if item is None:
@@ -698,7 +699,7 @@ def submit_review(order_item_id):
     item = db.execute("""
         SELECT oi.id, oi.product_id FROM order_items oi
         JOIN orders o ON oi.order_id = o.id
-        WHERE oi.id = ? AND o.user_id = ? AND oi.has_reviewed = 0
+        WHERE oi.id = %s AND o.user_id = %s AND oi.has_reviewed = 0
     """, (order_item_id, current_user.id)).fetchone()
 
     if item is None:
@@ -711,16 +712,16 @@ def submit_review(order_item_id):
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # 1. Insert the new review into the 'reviews' table
-    db.execute("INSERT INTO reviews (product_id, user_id, rating, comment, review_date) VALUES (?, ?, ?, ?, ?)",
+    db.execute("INSERT INTO reviews (product_id, user_id, rating, comment, review_date) VALUES (%s, %s, %s, %s, %s)",
                (product_id, current_user.id, rating, comment, current_time))
     
     # 2. Mark this specific order item as 'reviewed'
-    db.execute("UPDATE order_items SET has_reviewed = 1 WHERE id = ?", (order_item_id,))
+    db.execute("UPDATE order_items SET has_reviewed = 1 WHERE id = %s", (order_item_id,))
     
     # 3. Recalculate and update the product's overall average rating and number of ratings
-    stats = db.execute("SELECT AVG(rating) as avg, COUNT(id) as count FROM reviews WHERE product_id = ?", (product_id,)).fetchone()
+    stats = db.execute("SELECT AVG(rating) as avg, COUNT(id) as count FROM reviews WHERE product_id = %s", (product_id,)).fetchone()
     if stats:
-        db.execute("UPDATE products SET rating = ?, num_ratings = ? WHERE id = ?", 
+        db.execute("UPDATE products SET rating = %s, num_ratings = %s WHERE id = %s", 
                    (stats['avg'], stats['count'], product_id))
     
     db.commit()
@@ -734,7 +735,7 @@ def request_return(order_id):
     db = get_db()
     
     order = db.execute(
-        "SELECT * FROM orders WHERE id = ? AND user_id = ?",
+        "SELECT * FROM orders WHERE id = %s AND user_id = %s",
         (order_id, current_user.id)
     ).fetchone()
     
@@ -744,7 +745,7 @@ def request_return(order_id):
         return redirect(url_for('my_orders'))
         
     db.execute(
-        "UPDATE orders SET status = 'Return Requested' WHERE id = ?",
+        "UPDATE orders SET status = 'Return Requested' WHERE id = %s",
         (order_id,)
     )
     db.commit()
@@ -765,7 +766,7 @@ def add_to_cart(product_id):
         return redirect(url_for('product_detail', product_id=product_id))
 
     db = get_db()
-    inventory_item = db.execute("SELECT * FROM inventory WHERE id = ?", (inventory_id,)).fetchone()
+    inventory_item = db.execute("SELECT * FROM inventory WHERE id = %s", (inventory_id,)).fetchone()
 
     if not inventory_item:
         flash('Invalid product variant.', 'error')
@@ -807,7 +808,7 @@ def view_cart():
         item_data = db.execute("""
             SELECT p.*, i.size, i.id as inventory_id FROM products p
             JOIN inventory i ON p.id = i.product_id
-            WHERE p.id = ? AND i.id = ?
+            WHERE p.id = %s AND i.id = %s
         """, (product_id, inventory_id)).fetchone()
 
         if item_data:
@@ -823,7 +824,7 @@ def view_cart():
             processed_item['cart_key'] = cart_key
             
             available_inventory = db.execute(
-                "SELECT id, size, stock_quantity FROM inventory WHERE product_id = ? ORDER BY size",
+                "SELECT id, size, stock_quantity FROM inventory WHERE product_id = %s ORDER BY size",
                 (product_id,)
             ).fetchall()
             processed_item['available_inventory'] = available_inventory
@@ -863,7 +864,7 @@ def update_cart(cart_key):
             else:
                 db = get_db()
                 # Stock Check for the new size
-                new_inventory_item = db.execute("SELECT stock_quantity, product_id FROM inventory WHERE id = ?", (new_inventory_id,)).fetchone()
+                new_inventory_item = db.execute("SELECT stock_quantity, product_id FROM inventory WHERE id = %s", (new_inventory_id,)).fetchone()
                 if quantity > new_inventory_item['stock_quantity']:
                     flash(f"Sorry, only {new_inventory_item['stock_quantity']} items are in stock for the selected size.", 'error')
                     return redirect(url_for('view_cart'))
@@ -916,7 +917,7 @@ def checkout():
         product_id, inventory_id = cart_key.split('-')
         item_data = db.execute("""
             SELECT p.id, p.name, p.image_url, p.original_price, p.discount_percent, i.size, i.stock_quantity 
-            FROM products p JOIN inventory i ON p.id = i.product_id WHERE i.id = ?
+            FROM products p JOIN inventory i ON p.id = i.product_id WHERE i.id = %s
         """, (inventory_id,)).fetchone()
 
         if item_data:
@@ -944,7 +945,7 @@ def checkout():
         first_name = request.form.get('first_name')
         last_name = request.form.get('last_name')
         phone = request.form.get('phone')
-        db.execute("UPDATE users SET first_name = ?, last_name = ?, phone = ? WHERE id = ?",
+        db.execute("UPDATE users SET first_name = %s, last_name = %s, phone = %s WHERE id = %s",
                    (first_name, last_name, phone, current_user.id))
 
         # NEW: Capture the selected shipping address ID from the form
@@ -981,15 +982,15 @@ def checkout():
 
         cursor = db.execute("""
             INSERT INTO orders (user_id, shipping_address_id, payment_method, payment_details, order_date, total_price, tracking_number, shipping_status) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         """, (current_user.id, selected_address_id, payment_method, payment_details, current_time, final_total_price, tracking_number, shipping_status))
         new_order_id = cursor.lastrowid
 
         # Insert order items and decrement stock
         for item in order_items_to_insert:
-            db.execute("INSERT INTO order_items (order_id, product_id, inventory_id, size, quantity, price) VALUES (?, ?, ?, ?, ?, ?)", 
+            db.execute("INSERT INTO order_items (order_id, product_id, inventory_id, size, quantity, price) VALUES (%s, %s, %s, %s, %s, %s)", 
                        (new_order_id, item['product_id'], item['inventory_id'], item['size'], item['quantity'], item['price']))
-            db.execute("UPDATE inventory SET stock_quantity = stock_quantity - ? WHERE id = ?",
+            db.execute("UPDATE inventory SET stock_quantity = stock_quantity - %s WHERE id = %s",
                        (item['quantity'], item['inventory_id']))
 
         db.commit()
@@ -998,8 +999,8 @@ def checkout():
         return redirect(url_for('checkout_success'))
 
     # --- GET Request: Display the checkout page ---
-    user_data = db.execute("SELECT * FROM users WHERE id = ?", (current_user.id,)).fetchone()
-    addresses = db.execute("SELECT * FROM addresses WHERE user_id = ? ORDER BY is_default DESC", (current_user.id,)).fetchall()
+    user_data = db.execute("SELECT * FROM users WHERE id = %s", (current_user.id,)).fetchone()
+    addresses = db.execute("SELECT * FROM addresses WHERE user_id = %s ORDER BY is_default DESC", (current_user.id,)).fetchall()
     navigation_links = generate_content("navigation_links")
     
     return render_template('checkout.html', 
@@ -1047,7 +1048,7 @@ def get_reviews(product_id):
     reviews_data = db.execute(f"""
         SELECT r.rating, r.comment, u.username 
         FROM reviews r JOIN users u ON r.user_id = u.id 
-        WHERE r.product_id = ? {order_clause} LIMIT ? OFFSET ?
+        WHERE r.product_id = %s {order_clause} LIMIT %s OFFSET %s
     """, (product_id, REVIEWS_PER_PAGE, offset)).fetchall()
     
     # Convert the database rows to a list of dictionaries
@@ -1063,7 +1064,7 @@ def cancel_order(order_id):
     
     # Security check 1: Ensure the order belongs to the current user
     order = db.execute(
-        "SELECT * FROM orders WHERE id = ? AND user_id = ?",
+        "SELECT * FROM orders WHERE id = %s AND user_id = %s",
         (order_id, current_user.id)
     ).fetchone()
     
@@ -1077,14 +1078,14 @@ def cancel_order(order_id):
         return redirect(url_for('order_details', order_id=order_id))
 
     # --- Step 1: Restore stock quantities for all items in the order ---
-    order_items = db.execute("SELECT inventory_id, quantity FROM order_items WHERE order_id = ?", (order_id,)).fetchall()
+    order_items = db.execute("SELECT inventory_id, quantity FROM order_items WHERE order_id = %s", (order_id,)).fetchall()
     
     for item in order_items:
-        db.execute("UPDATE inventory SET stock_quantity = stock_quantity + ? WHERE id = ?", 
+        db.execute("UPDATE inventory SET stock_quantity = stock_quantity + %s WHERE id = %s", 
                    (item['quantity'], item['inventory_id']))
 
     # --- Step 2: Update the order's status to 'Cancelled' ---
-    db.execute("UPDATE orders SET status = 'Cancelled' WHERE id = ?", (order_id,))
+    db.execute("UPDATE orders SET status = 'Cancelled' WHERE id = %s", (order_id,))
     
     db.commit()
     
@@ -1100,7 +1101,7 @@ def handle_connect():
     print('Client connected to chatbot')
     # Initialize an empty chat history in the user's session
     session['chat_history'] = []
-    welcome_message = "Hello! I'm the Aura Apparel shopping assistant. How can I help you find the perfect sustainable clothing today?"
+    welcome_message = "Hello! I'm the Aura Apparel shopping assistant. How can I help you find the perfect sustainable clothing today%s"
     # Add welcome message to history
     session['chat_history'].append({'role': 'assistant', 'content': welcome_message})
     response_payload = {

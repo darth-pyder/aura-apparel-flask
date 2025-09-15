@@ -4,6 +4,8 @@ import re
 from dotenv import load_dotenv
 import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
+import psycopg2
+import psycopg2.extras
 
 # --- 1. SETUP (Unchanged) ---
 load_dotenv()
@@ -22,8 +24,7 @@ DATABASE = os.path.join(INSTANCE_FOLDER_PATH, 'products.db')
 
 # --- 2. DATABASE TOOLS (Unchanged) ---
 def get_db_connection():
-    conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row
+    conn = psycopg2.connect(os.getenv("DATABASE_URL"))
     return conn
 
 def find_bestsellers():
@@ -38,7 +39,7 @@ def find_reviews_for_product(search_term):
     clean_search = re.sub(r'reviews for|people say about|thoughts on', '', search_term, flags=re.IGNORECASE).strip()
     words = [word for word in clean_search.split() if word not in {'the', 'a', 'an'}]
     if not words: return []
-    conditions = " AND ".join(["p.name LIKE ?"] * len(words))
+    conditions = " AND ".join(["p.name LIKE %s"] * len(words))
     params = [f"%{word.rstrip('s')}%" for word in words]
     query = f"SELECT r.rating, r.comment, p.name FROM reviews r JOIN products p ON r.product_id = p.id WHERE {conditions} ORDER BY r.rating DESC LIMIT 3"
     reviews = conn.execute(query, params).fetchall()

@@ -3,9 +3,17 @@ import random
 import os
 from werkzeug.security import generate_password_hash
 from datetime import datetime, timedelta
+import psycopg2
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # --- Configuration ---
 INR_EXCHANGE_RATE = 83.50
+
+def get_db_connection():
+    conn = psycopg2.connect(os.getenv("DATABASE_URL"))
+    return conn
 
 # --- Helper Function 1 ---
 def get_brand_for_product(name):
@@ -32,10 +40,10 @@ def create_dedicated_test_user(cursor):
     phone = "987-654-3210"
 
     # Insert user and get their new ID
-    cursor.execute("SELECT id FROM users WHERE username = ?", (username,))
+    cursor.execute("SELECT id FROM users WHERE username = %s", (username,))
     if cursor.fetchone() is None:
         cursor.execute(
-            "INSERT INTO users (username, email, password_hash, first_name, last_name, phone) VALUES (?, ?, ?, ?, ?, ?)",
+            "INSERT INTO users (username, email, password_hash, first_name, last_name, phone) VALUES (%s, %s, %s, %s, %s, %s)",
             (username, email, generate_password_hash(password), first_name, last_name, phone)
         )
         test_user_id = cursor.lastrowid
@@ -49,7 +57,7 @@ def create_dedicated_test_user(cursor):
         address_ids = []
         for addr in addresses:
             cursor.execute(
-                "INSERT INTO addresses (user_id, address, city, state, zip_code, is_default) VALUES (?, ?, ?, ?, ?, ?)",
+                "INSERT INTO addresses (user_id, address, city, state, zip_code, is_default) VALUES (%s, %s, %s, %s, %s, %s)",
                 (test_user_id, addr['address'], addr['city'], addr['state'], addr['zip_code'], addr['is_default'])
             )
             address_ids.append(cursor.lastrowid)
@@ -58,32 +66,32 @@ def create_dedicated_test_user(cursor):
         # User Order History
         # Order 1: Delivered (Eligible for Return)
         order1_date = (datetime.now() - timedelta(days=10)).strftime("%Y-%m-%d %H:%M:%S")
-        cursor.execute("INSERT INTO orders (user_id, shipping_address_id, payment_method, payment_details, order_date, total_price, status, tracking_number, shipping_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        cursor.execute("INSERT INTO orders (user_id, shipping_address_id, payment_method, payment_details, order_date, total_price, status, tracking_number, shipping_status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
                        (test_user_id, address_ids[0], 'card', '4242', order1_date, 1789.0, 'Completed', f"AWB{random.randint(100000000, 999999999)}IN", 'Delivered'))
         order1_id = cursor.lastrowid
-        cursor.execute("INSERT INTO order_items (order_id, product_id, inventory_id, size, quantity, price) VALUES (?, ?, ?, ?, ?, ?)", (order1_id, 4, 18, 'L', 1, 899))
-        cursor.execute("INSERT INTO order_items (order_id, product_id, inventory_id, size, quantity, price) VALUES (?, ?, ?, ?, ?, ?)", (order1_id, 24, 118, '34', 1, 890))
+        cursor.execute("INSERT INTO order_items (order_id, product_id, inventory_id, size, quantity, price) VALUES (%s, %s, %s, %s, %s, %s)", (order1_id, 4, 18, 'L', 1, 899))
+        cursor.execute("INSERT INTO order_items (order_id, product_id, inventory_id, size, quantity, price) VALUES (%s, %s, %s, %s, %s, %s)", (order1_id, 24, 118, '34', 1, 890))
 
         # Order 2: In Transit (Eligible for Cancellation)
         order2_date = (datetime.now() - timedelta(days=2)).strftime("%Y-%m-%d %H:%M:%S")
-        cursor.execute("INSERT INTO orders (user_id, shipping_address_id, payment_method, payment_details, order_date, total_price, status, tracking_number, shipping_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        cursor.execute("INSERT INTO orders (user_id, shipping_address_id, payment_method, payment_details, order_date, total_price, status, tracking_number, shipping_status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
                        (test_user_id, address_ids[1], 'upi', 'Paytm', order2_date, 2518.0, 'Completed', f"AWB{random.randint(100000000, 999999999)}IN", 'In Transit'))
         order2_id = cursor.lastrowid
-        cursor.execute("INSERT INTO order_items (order_id, product_id, inventory_id, size, quantity, price) VALUES (?, ?, ?, ?, ?, ?)", (order2_id, 36, 178, 'L', 1, 2448))
+        cursor.execute("INSERT INTO order_items (order_id, product_id, inventory_id, size, quantity, price) VALUES (%s, %s, %s, %s, %s, %s)", (order2_id, 36, 178, 'L', 1, 2448))
 
         # Order 3: Return Requested
         order3_date = (datetime.now() - timedelta(days=20)).strftime("%Y-%m-%d %H:%M:%S")
-        cursor.execute("INSERT INTO orders (user_id, shipping_address_id, payment_method, payment_details, order_date, total_price, status, tracking_number, shipping_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        cursor.execute("INSERT INTO orders (user_id, shipping_address_id, payment_method, payment_details, order_date, total_price, status, tracking_number, shipping_status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
                        (test_user_id, address_ids[0], 'cod', None, order3_date, 1969.0, 'Return Requested', f"AWB{random.randint(100000000, 999999999)}IN", 'Delivered'))
         order3_id = cursor.lastrowid
-        cursor.execute("INSERT INTO order_items (order_id, product_id, inventory_id, size, quantity, price) VALUES (?, ?, ?, ?, ?, ?)", (order3_id, 15, 73, 'M', 1, 1899))
+        cursor.execute("INSERT INTO order_items (order_id, product_id, inventory_id, size, quantity, price) VALUES (%s, %s, %s, %s, %s, %s)", (order3_id, 15, 73, 'M', 1, 1899))
 
         # Order 4: Cancelled
         order4_date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S")
-        cursor.execute("INSERT INTO orders (user_id, shipping_address_id, payment_method, payment_details, order_date, total_price, status, tracking_number, shipping_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        cursor.execute("INSERT INTO orders (user_id, shipping_address_id, payment_method, payment_details, order_date, total_price, status, tracking_number, shipping_status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
                        (test_user_id, address_ids[0], 'card', '4242', order4_date, 1069.0, 'Cancelled', f"AWB{random.randint(100000000, 999999999)}IN", 'Processing'))
         order4_id = cursor.lastrowid
-        cursor.execute("INSERT INTO order_items (order_id, product_id, inventory_id, size, quantity, price) VALUES (?, ?, ?, ?, ?, ?)", (order4_id, 6, 28, 'L', 1, 999))
+        cursor.execute("INSERT INTO order_items (order_id, product_id, inventory_id, size, quantity, price) VALUES (%s, %s, %s, %s, %s, %s)", (order4_id, 6, 28, 'L', 1, 999))
 
         print("Finished creating dedicated test user and their order history.")
     else:
@@ -91,14 +99,8 @@ def create_dedicated_test_user(cursor):
 
 # --- Main Database Setup Function ---
 def setup_database():
-    INSTANCE_FOLDER_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'instance')
-    DATABASE_PATH = os.path.join(INSTANCE_FOLDER_PATH, 'products.db')
-
-    # Create the instance folder if it doesn't exist
-    os.makedirs(INSTANCE_FOLDER_PATH, exist_ok=True)
-    conn.row_factory = sqlite3.Row
+    conn = get_db_connection()
     cursor = conn.cursor()
-    conn = sqlite3.connect(DATABASE_PATH)
 
     # Drop all tables
     print("Dropping old tables if they exist...")
@@ -142,11 +144,11 @@ def setup_database():
         discount = random.choice([0, 0, 10, 15, 20, 25, 30, 40, 50])
         image_filename = f"{product['id']}.png"
         
-        cursor.execute("INSERT INTO products (id, name, description, long_description, original_price, discount_percent, image_url, category, brand, color, rating, num_ratings) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (product['id'], name, short_desc, long_desc, original_price, discount, image_filename, product['category'], brand, product['color'], 0, 0))
+        cursor.execute("INSERT INTO products (id, name, description, long_description, original_price, discount_percent, image_url, category, brand, color, rating, num_ratings) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (product['id'], name, short_desc, long_desc, original_price, discount, image_filename, product['category'], brand, product['color'], 0, 0))
         size_list = ["S", "M", "L", "XL", "XXL"] if product['category'] in ["Tops", "Outerwear", "Activewear"] else ["30", "32", "34", "36", "38"]
         for size in size_list:
             stock = random.choice([0, random.randint(5, 50)])
-            cursor.execute("INSERT INTO inventory (product_id, size, stock_quantity) VALUES (?, ?, ?)", (product['id'], size, stock))
+            cursor.execute("INSERT INTO inventory (product_id, size, stock_quantity) VALUES (%s, %s, %s)", (product['id'], size, stock))
     print(f"{len(products)} products and their inventory inserted.")
 
     # Populate users
@@ -156,10 +158,10 @@ def setup_database():
     ]
     for i, user in enumerate(users):
         user_id = i + 1
-        cursor.execute("SELECT id FROM users WHERE username = ?", (user[0],))
+        cursor.execute("SELECT id FROM users WHERE username = %s", (user[0],))
         if cursor.fetchone() is None:
-            cursor.execute("INSERT INTO users (username, email, password_hash, first_name, last_name, phone) VALUES (?, ?, ?, ?, ?, ?)", (user[0], user[1], generate_password_hash(user[2]), user[3], user[4], user[5]))
-            cursor.execute("INSERT INTO addresses (user_id, address, city, state, zip_code, is_default) VALUES (?, ?, ?, ?, ?, ?)", (user_id, f'{123+i} Main St', 'Anytown', 'CA', f'123{i:02}', 1))
+            cursor.execute("INSERT INTO users (username, email, password_hash, first_name, last_name, phone) VALUES (%s, %s, %s, %s, %s, %s)", (user[0], user[1], generate_password_hash(user[2]), user[3], user[4], user[5]))
+            cursor.execute("INSERT INTO addresses (user_id, address, city, state, zip_code, is_default) VALUES (%s, %s, %s, %s, %s, %s)", (user_id, f'{123+i} Main St', 'Anytown', 'CA', f'123{i:02}', 1))
     print(f"{len(users)} dummy users and their default addresses created.")
 
     # Populate reviews
@@ -170,7 +172,7 @@ def setup_database():
     for i, review in enumerate(all_sample_reviews):
         user_id_to_use = random.randint(1, len(users))
         review_date = (datetime.now() - timedelta(days=i * random.randint(1, 5))).strftime("%Y-%m-%d %H:%M:%S")
-        cursor.execute("INSERT INTO reviews (product_id, user_id, rating, comment, review_date) VALUES (?, ?, ?, ?, ?)", (review[0], user_id_to_use, review[1], review[2], review_date))
+        cursor.execute("INSERT INTO reviews (product_id, user_id, rating, comment, review_date) VALUES (%s, %s, %s, %s, %s)", (review[0], user_id_to_use, review[1], review[2], review_date))
     print(f"{len(all_sample_reviews)} sample reviews created.")
 
     # Calculate and update ratings
@@ -178,19 +180,20 @@ def setup_database():
     product_ids_with_reviews = cursor.execute("SELECT DISTINCT product_id FROM reviews").fetchall()
     for row in product_ids_with_reviews:
         product_id = row['product_id']
-        stats_data = cursor.execute("SELECT AVG(rating) as avg_rating, COUNT(id) as rating_count FROM reviews WHERE product_id = ?", (product_id,)).fetchone()
+        stats_data = cursor.execute("SELECT AVG(rating) as avg_rating, COUNT(id) as rating_count FROM reviews WHERE product_id = %s", (product_id,)).fetchone()
         if stats_data:
             avg_rating = round(stats_data['avg_rating'], 1) if stats_data['avg_rating'] else 0
             rating_count = stats_data['rating_count']
-            cursor.execute("UPDATE products SET rating = ?, num_ratings = ? WHERE id = ?", (avg_rating, rating_count, product_id))
+            cursor.execute("UPDATE products SET rating = %s, num_ratings = %s WHERE id = %s", (avg_rating, rating_count, product_id))
     print("Ratings updated.")
 
     # CALL TO THE DEDICATED TEST USER FUNCTION
     create_dedicated_test_user(cursor)
             
     conn.commit()
+    cursor.close()
     conn.close()
-    print("Database setup complete and connection closed.")
+    print("Database setup complete.")
 
 if __name__ == '__main__':
     setup_database()
