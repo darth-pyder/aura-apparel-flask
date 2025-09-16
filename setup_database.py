@@ -1,17 +1,18 @@
-import sqlite3
-import random
 import os
+import psycopg2
+import psycopg2.extras
+from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash
 from datetime import datetime, timedelta
-import psycopg2
-from dotenv import load_dotenv
-
-load_dotenv()
+import random
 
 # --- Configuration ---
 INR_EXCHANGE_RATE = 83.50
 
+load_dotenv()
+
 def get_db_connection():
+    """Establishes a connection to the PostgreSQL database."""
     conn = psycopg2.connect(os.getenv("DATABASE_URL"))
     return conn
 
@@ -102,30 +103,111 @@ def setup_database():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Drop all tables
     print("Dropping old tables if they exist...")
-    # ... (all DROP TABLE statements) ...
-    cursor.execute("DROP TABLE IF EXISTS reviews")
-    cursor.execute("DROP TABLE IF EXISTS order_items")
-    cursor.execute("DROP TABLE IF EXISTS orders")
-    cursor.execute("DROP TABLE IF EXISTS inventory")
-    cursor.execute("DROP TABLE IF EXISTS addresses")
-    cursor.execute("DROP TABLE IF EXISTS products")
-    cursor.execute("DROP TABLE IF EXISTS users")
-    cursor.execute("DROP TABLE IF EXISTS wishlist")
+    cursor.execute("DROP TABLE IF EXISTS reviews CASCADE;")
+    cursor.execute("DROP TABLE IF EXISTS order_items CASCADE;")
+    cursor.execute("DROP TABLE IF EXISTS orders CASCADE;")
+    cursor.execute("DROP TABLE IF EXISTS inventory CASCADE;")
+    cursor.execute("DROP TABLE IF EXISTS addresses CASCADE;")
+    cursor.execute("DROP TABLE IF EXISTS products CASCADE;")
+    cursor.execute("DROP TABLE IF EXISTS users CASCADE;")
+    cursor.execute("DROP TABLE IF EXISTS wishlist CASCADE;")
     print("Old tables dropped.")
 
-    # Recreate all tables
-    print("Creating new tables with the final schema...")
-    # ... (all CREATE TABLE statements) ...
-    cursor.execute("CREATE TABLE products (id INTEGER PRIMARY KEY, name TEXT NOT NULL, description TEXT, long_description TEXT, original_price REAL NOT NULL, discount_percent INTEGER NOT NULL DEFAULT 0, image_url TEXT, category TEXT, brand TEXT, color TEXT, rating REAL, num_ratings INTEGER NOT NULL DEFAULT 0);")
-    cursor.execute("CREATE TABLE inventory (id INTEGER PRIMARY KEY AUTOINCREMENT, product_id INTEGER NOT NULL, size TEXT NOT NULL, stock_quantity INTEGER NOT NULL, FOREIGN KEY (product_id) REFERENCES products(id), UNIQUE(product_id, size));")
-    cursor.execute("CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT UNIQUE NOT NULL, email TEXT UNIQUE NOT NULL, password_hash TEXT NOT NULL, first_name TEXT NOT NULL, last_name TEXT NOT NULL, phone TEXT NOT NULL);")
-    cursor.execute("CREATE TABLE addresses (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, address TEXT NOT NULL, city TEXT NOT NULL, state TEXT NOT NULL, zip_code TEXT NOT NULL, is_default INTEGER NOT NULL DEFAULT 0, FOREIGN KEY (user_id) REFERENCES users(id));")
-    cursor.execute("CREATE TABLE orders (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL, shipping_address_id INTEGER NOT NULL, payment_method TEXT NOT NULL, payment_details TEXT, order_date TEXT NOT NULL, total_price REAL NOT NULL, status TEXT DEFAULT 'Completed', tracking_number TEXT, shipping_status TEXT, FOREIGN KEY (user_id) REFERENCES users (id), FOREIGN KEY (shipping_address_id) REFERENCES addresses (id));")
-    cursor.execute("CREATE TABLE order_items (id INTEGER PRIMARY KEY, order_id INTEGER NOT NULL, product_id INTEGER NOT NULL, inventory_id INTEGER NOT NULL, size TEXT NOT NULL, quantity INTEGER NOT NULL, price REAL NOT NULL, has_reviewed INTEGER NOT NULL DEFAULT 0, FOREIGN KEY (order_id) REFERENCES orders (id), FOREIGN KEY (product_id) REFERENCES products (id), FOREIGN KEY (inventory_id) REFERENCES inventory (id));")
-    cursor.execute("CREATE TABLE reviews (id INTEGER PRIMARY KEY, product_id INTEGER NOT NULL, user_id INTEGER NOT NULL, rating INTEGER NOT NULL, comment TEXT NOT NULL, review_date TEXT NOT NULL, FOREIGN KEY (product_id) REFERENCES products (id), FOREIGN KEY (user_id) REFERENCES users (id));")
-    cursor.execute("CREATE TABLE wishlist (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL, product_id INTEGER NOT NULL, added_date TEXT NOT NULL, FOREIGN KEY (user_id) REFERENCES users (id), FOREIGN KEY (product_id) REFERENCES products (id), UNIQUE(user_id, product_id));")
+    print("Creating new tables with correct PostgreSQL schema...")
+    
+    # All tables are rewritten with PostgreSQL-compatible syntax
+    cursor.execute("""
+    CREATE TABLE products (
+        id SERIAL PRIMARY KEY,
+        name TEXT NOT NULL,
+        description TEXT,
+        long_description TEXT,
+        original_price NUMERIC(10, 2) NOT NULL,
+        discount_percent INTEGER NOT NULL DEFAULT 0,
+        image_url TEXT,
+        category TEXT,
+        brand TEXT,
+        color TEXT,
+        rating NUMERIC(3, 1),
+        num_ratings INTEGER NOT NULL DEFAULT 0
+    );""")
+
+    cursor.execute("""
+    CREATE TABLE inventory (
+        id SERIAL PRIMARY KEY,
+        product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+        size TEXT NOT NULL,
+        stock_quantity INTEGER NOT NULL,
+        UNIQUE(product_id, size)
+    );""")
+
+    cursor.execute("""
+    CREATE TABLE users (
+        id SERIAL PRIMARY KEY,
+        username TEXT UNIQUE NOT NULL,
+        email TEXT UNIQUE NOT NULL,
+        password_hash TEXT NOT NULL,
+        first_name TEXT NOT NULL,
+        last_name TEXT NOT NULL,
+        phone TEXT NOT NULL
+    );""")
+    
+    cursor.execute("""
+    CREATE TABLE addresses (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        address TEXT NOT NULL,
+        city TEXT NOT NULL,
+        state TEXT NOT NULL,
+        zip_code TEXT NOT NULL,
+        is_default BOOLEAN NOT NULL DEFAULT FALSE
+    );""")
+
+    cursor.execute("""
+    CREATE TABLE orders (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        shipping_address_id INTEGER NOT NULL REFERENCES addresses(id),
+        payment_method TEXT NOT NULL,
+        payment_details TEXT,
+        order_date TIMESTAMP NOT NULL,
+        total_price NUMERIC(10, 2) NOT NULL,
+        status TEXT DEFAULT 'Completed',
+        tracking_number TEXT,
+        shipping_status TEXT
+    );""")
+    
+    cursor.execute("""
+    CREATE TABLE order_items (
+        id SERIAL PRIMARY KEY,
+        order_id INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+        product_id INTEGER NOT NULL REFERENCES products(id),
+        inventory_id INTEGER NOT NULL REFERENCES inventory(id),
+        size TEXT NOT NULL,
+        quantity INTEGER NOT NULL,
+        price NUMERIC(10, 2) NOT NULL,
+        has_reviewed BOOLEAN NOT NULL DEFAULT FALSE
+    );""")
+    
+    cursor.execute("""
+    CREATE TABLE reviews (
+        id SERIAL PRIMARY KEY,
+        product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        rating INTEGER NOT NULL,
+        comment TEXT NOT NULL,
+        review_date TIMESTAMP NOT NULL
+    );""")
+
+    cursor.execute("""
+    CREATE TABLE wishlist (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        product_id INTEGER NOT NULL REFERENCES products(id),
+        added_date TIMESTAMP NOT NULL,
+        UNIQUE(user_id, product_id)
+    );""")
     print("All tables recreated successfully.")
 
     # Populate products
@@ -193,7 +275,7 @@ def setup_database():
     conn.commit()
     cursor.close()
     conn.close()
-    print("Database setup complete.")
+    print("Database setup complete and connection closed.")
 
 if __name__ == '__main__':
     setup_database()
