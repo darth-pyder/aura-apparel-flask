@@ -22,8 +22,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of your application code into the container
 COPY . .
 
-# Run the database setup script during the build
-RUN python first_run.py
 
 # Command to run your app using a production server
-CMD ["gunicorn", "-w", "1", "-k", "eventlet", "app:app"]
+CMD ["./start.sh"]
