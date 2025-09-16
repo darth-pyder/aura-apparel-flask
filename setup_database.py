@@ -238,13 +238,20 @@ def setup_database():
     users = [
         ('chris_hemsworth', 'chris.h@example.com', 'password123', 'Chris', 'Hemsworth', '555-0101'), ('zendaya', 'zendaya.c@example.com', 'password456', 'Zendaya', 'Coleman', '555-0102'), ('ryan_reynolds', 'ryan.r@example.com', 'password789', 'Ryan', 'Reynolds', '555-0103'), ('taylor_swift', 'taylor.s@example.com', 'password101', 'Taylor', 'Swift', '555-0104'), ('dwayne_johnson', 'dwayne.j@example.com', 'password112', 'Dwayne', 'Johnson', '555-0105'), ('tom_holland', 'tom.h@example.com', 'password113', 'Tom', 'Holland', '555-0106'), ('scarlett_johansson', 'scarlett.j@example.com', 'password114', 'Scarlett', 'Johansson', '555-0107'), ('keanu_reeves', 'keanu.r@example.com', 'password115', 'Keanu', 'Reeves', '555-0108'), ('margot_robbie', 'margot.r@example.com', 'password116', 'Margot', 'Robbie', '555-0109'), ('idris_elba', 'idris.e@example.com', 'password117', 'Idris', 'Elba', '555-0110')
     ]
-    for i, user in enumerate(users):
-        user_id = i + 1
-        cursor.execute("SELECT id FROM users WHERE username = %s", (user[0],))
-        if cursor.fetchone() is None:
-            cursor.execute("INSERT INTO users (username, email, password_hash, first_name, last_name, phone) VALUES (%s, %s, %s, %s, %s, %s)", (user[0], user[1], generate_password_hash(user[2]), user[3], user[4], user[5]))
-            cursor.execute("INSERT INTO addresses (user_id, address, city, state, zip_code, is_default) VALUES (%s, %s, %s, %s, %s, %s)", (user_id, f'{123+i} Main St', 'Anytown', 'CA', f'123{i:02}', 1))
-    print(f"{len(users)} dummy users and their default addresses created.")
+    for i, user_data in enumerate(users):
+        cursor.execute(
+            "INSERT INTO users (username, email, password_hash, first_name, last_name, phone) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id",
+            (user_data[0], user_data[1], generate_password_hash(user_data[2]), user_data[3], user_data[4], user_data[5])
+        )
+        user_id = cursor.fetchone()[0]
+        
+        # --- THIS IS THE CRITICAL FIX ---
+        # We now insert the Python boolean 'True' instead of the integer '1'
+        cursor.execute(
+            "INSERT INTO addresses (user_id, address, city, state, zip_code, is_default) VALUES (%s, %s, %s, %s, %s, %s)",
+            (user_id, f'{123+i} Main St', 'Anytown', 'CA', f'123{i:02}', True)
+        )
+    print(f"{len(users)} users and addresses inserted.")
 
     # Populate reviews
     print("Creating a large set of sample reviews...")
