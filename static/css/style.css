@@ -1407,10 +1407,10 @@ html { box-sizing: border-box; }
 
 .cart-empty {
     /* --- THE KEY FIX --- */
-    width: 80%;
+    width: 100%;
     display: flex;
-    flex-direction: row;
-    align-items: baseline;
+    flex-direction: column;
+    align-items: center;
     padding: 100px 0;
     text-align: center;
     gap: 20px;
