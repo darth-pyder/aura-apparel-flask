@@ -17,7 +17,18 @@ from ai_prompts import generate_content
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'a-super-secret-key-that-you-should-change')
 # Use eventlet as the async mode for Gunicorn compatibility on Render
-socketio = SocketIO(app, async_mode='eventlet')
+
+# --- THIS IS THE CRITICAL FIX ---
+# Determine the async mode based on the environment.
+# Gunicorn on Render will set the GUNICORN_CMD_ARGS environment variable.
+IS_GUNICORN = "gunicorn" in os.environ.get("SERVER_SOFTWARE", "")
+if IS_GUNICORN:
+    async_mode = 'eventlet'
+else:
+    async_mode = None  # Let Flask-SocketIO choose the best available
+
+socketio = SocketIO(app, async_mode=async_mode)
+# --- END OF FIX ---
 
 # --- CONSTANTS ---
 REVIEWS_PER_PAGE = 4
@@ -580,8 +591,10 @@ def update_cart(cart_key):
         try:
             quantity = int(request.form.get('quantity', 1))
             new_inventory_id = int(request.form.get('inventory_id'))
+
+            # If quantity is set to 0 or less, it should be treated as a removal.
             if quantity <= 0:
-                del cart[cart_key]
+                cart.pop(cart_key, None)
                 flash('Item removed from cart.', 'success')
             else:
                 db = get_db()
@@ -589,25 +602,33 @@ def update_cart(cart_key):
                 cursor.execute("SELECT stock_quantity, product_id FROM inventory WHERE id = %s", (new_inventory_id,))
                 new_inventory_item = cursor.fetchone()
                 cursor.close()
+
                 if quantity > new_inventory_item['stock_quantity']:
                     flash(f"Sorry, only {new_inventory_item['stock_quantity']} items are in stock.", 'error')
-                    return redirect(url_for('view_cart'))
-                new_cart_key = f"{new_inventory_item['product_id']}-{new_inventory_id}"
-                cart.pop(cart_key, None)
-                cart[new_cart_key] = quantity
-                flash('Cart updated.', 'success')
+                else:
+                    new_cart_key = f"{new_inventory_item['product_id']}-{new_inventory_id}"
+                    # Remove the old item regardless of whether the size changed
+                    cart.pop(cart_key, None)
+                    # Add the new or updated item
+                    cart[new_cart_key] = quantity
+                    flash('Cart updated.', 'success')
         except (ValueError, TypeError):
             flash('Invalid update.', 'error')
+    
     session['cart'] = cart
+    session.modified = True # Ensure the session is saved
     return redirect(url_for('view_cart'))
 
 @app.route('/remove_from_cart/<cart_key>', methods=['POST'])
 def remove_from_cart(cart_key):
     cart = session.get('cart', {})
-    if cart_key in cart:
-        del cart[cart_key]
+    
+    # Use .pop() which safely removes a key and returns None if it's not found
+    if cart.pop(cart_key, None):
+        flash('Item removed from your cart.', 'success')
+    
     session['cart'] = cart
-    flash('Item removed from cart.', 'success')
+    session.modified = True # Ensure the session is saved
     return redirect(url_for('view_cart'))
 
 @app.route('/checkout', methods=['GET', 'POST'])

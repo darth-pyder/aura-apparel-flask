@@ -29,7 +29,7 @@
                     <!-- 2. The Order Info (Unchanged but now inside the left group) -->
                     <div class="order-info">
                         <strong>Order #{{ order.id }}</strong>
-                        <small>Placed on: {{ order.date }}</small>
+                        <small>Placed on: {{ order.date.strftime('%B %d, %Y') }}</small>
                     </div>
                 </div>
 

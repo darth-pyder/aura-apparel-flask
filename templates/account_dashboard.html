@@ -13,7 +13,7 @@
         <div class="dashboard-card">
             <h4>Last Order</h4>
             {% if last_order %}
-                <p>Order #{{ last_order.id }} placed on {{ last_order.order_date.split(' ')[0] }}.</p>
+                <p>Order #{{ last_order.id }} placed on {{ last_order.order_date.strftime('%B %d, %Y') }}.</p>
                 <!-- MODIFIED: The url_for() now correctly points to 'order_details' -->
                 <a href="{{ url_for('order_details', order_id=last_order.id) }}" class="btn btn-secondary btn-small">View Order</a>
             {% else %}
