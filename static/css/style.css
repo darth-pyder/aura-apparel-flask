@@ -3583,3 +3583,19 @@ html { box-sizing: border-box; }
 .bot-order-info strong, .bot-order-info span {
     display: block;
 }
+
+/* --- Definitive Auto-Hiding Header --- */
+
+/* 1. Make the header sticky and give it a smooth transition */
+.main-header {
+    position: sticky; /* Keeps the header in the viewport's flow but allows positioning */
+    top: 0;           /* Stick to the very top of the screen */
+    z-index: 1000;    /* Ensure it stays above other content */
+    transition: top 0.3s ease-in-out; /* This is the smooth animation */
+}
+
+/* 2. Create the "hidden" state */
+/* This class will be added by JavaScript to hide the header */
+.main-header.hidden {
+    top: -100px; /* Moves the header completely out of view above the screen */
+}

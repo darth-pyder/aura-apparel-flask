@@ -181,3 +181,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// --- Definitive Auto-Hiding Header Logic ---
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Select the header element
+    const header = document.querySelector('.main-header');
+    
+    // Check if the header exists on the page
+    if (header) {
+        let lastScrollTop = 0; // Variable to store the last scroll position
+
+        // Listen for the scroll event on the window
+        window.addEventListener('scroll', function() {
+            // Get the current scroll position
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            // Check if the user is scrolling down and is past the header's height
+            if (scrollTop > lastScrollTop && scrollTop > header.offsetHeight) {
+                // Scrolling Down
+                header.classList.add('hidden');
+            } else {
+                // Scrolling Up
+                header.classList.remove('hidden');
+            }
+            
+            // Update the last scroll position
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // For Mobile or negative scrolling
+        }, false);
+    }
+});
