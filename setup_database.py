@@ -31,11 +31,11 @@ def create_dedicated_test_user(cursor):
     """Creates a special test user with a rich order history."""
     print("\n--- Creating Dedicated Test User ---")
     
-    username = "dias_antony"
-    email = "dias@myre.com"
-    password = "dias123"
-    first_name = "Dias"
-    last_name = "Antony"
+    username = "vishnu"
+    email = "vishnu@gmail.com"
+    password = "vishnu123"
+    first_name = "Vishnu"
+    last_name = "Sana"
     phone = "987-654-3210"
 
     cursor.execute("SELECT id FROM users WHERE username = %s", (username,))
