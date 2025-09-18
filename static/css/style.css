@@ -1102,16 +1102,17 @@ html { box-sizing: border-box; }
 }
 
 /* Suggested Replies */
-.suggested-replies {
-    padding: 0 20px 15px 20px;
-    display: flex;
-    gap: 8px;
-    flex-wrap: nowrap; /* Prevents items from wrapping to the next line */
-    overflow-x: auto; /* Enables horizontal scrolling when content overflows */
-    
-    /* --- Optional: For a cleaner look, hide the scrollbar --- */
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+.suggestion-chip {
+    background-color: transparent;
+    border: 1px solid #007bff;
+    color: #007bff;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap; /* <-- ADD THIS LINE */
 }
 
 /* --- Optional: Hides scrollbar for Chrome, Safari, and Opera --- */
