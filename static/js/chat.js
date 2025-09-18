@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 // Step 1: Smoothly scroll to the right
                 suggestedRepliesContainer.scrollTo({
-                    left: 100, // Scroll 100 pixels to the right
+                    left: 200, // Scroll 100 pixels to the right
                     behavior: 'smooth'
                 });
 
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         left: 0, // Scroll back to the very beginning
                         behavior: 'smooth'
                     });
-                }, 800); // 800ms (0.8s) pause before returning
+                }, 1000); // 800ms (0.8s) pause before returning
             }, 500); // 500ms (0.5s) delay before starting the animation
         }
         // === END OF NEW LOGIC ===
