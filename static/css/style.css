@@ -1101,7 +1101,15 @@ html { box-sizing: border-box; }
     border-bottom-left-radius: 4px; /* "Tail" effect */
 }
 
-/* Suggested Replies */
+/* --- Suggested Replies (Corrected for Wrapping) --- */
+.suggested-replies {
+    padding: 0 15px 15px 15px; /* Adjust padding slightly */
+    display: flex;
+    flex-wrap: wrap; /* <-- THIS IS THE KEY FIX: Allows items to wrap */
+    gap: 10px;       /* Adds space between chips, both horizontally and vertically */
+    justify-content: flex-start; /* Aligns chips to the left */
+}
+
 .suggestion-chip {
     background-color: transparent;
     border: 1px solid #007bff;
@@ -1112,7 +1120,12 @@ html { box-sizing: border-box; }
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    white-space: nowrap; /* <-- ADD THIS LINE */
+    white-space: nowrap; /* Prevents text inside a single chip from breaking */
+}
+
+.suggestion-chip:hover {
+    background-color: #007bff;
+    color: #fff;
 }
 
 /* --- Optional: Hides scrollbar for Chrome, Safari, and Opera --- */
