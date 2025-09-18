@@ -1105,9 +1105,20 @@ html { box-sizing: border-box; }
 .suggested-replies {
     padding: 0 20px 15px 20px;
     display: flex;
-    flex-wrap: wrap;
     gap: 8px;
+    flex-wrap: nowrap; /* Prevents items from wrapping to the next line */
+    overflow-x: auto; /* Enables horizontal scrolling when content overflows */
+    
+    /* --- Optional: For a cleaner look, hide the scrollbar --- */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
 }
+
+/* --- Optional: Hides scrollbar for Chrome, Safari, and Opera --- */
+.suggested-replies::-webkit-scrollbar {
+    display: none;
+}
+
 .suggestion-chip {
     background-color: transparent;
     border: 1px solid #007bff;
