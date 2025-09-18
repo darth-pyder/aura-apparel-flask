@@ -1851,7 +1851,7 @@ html { box-sizing: border-box; }
 /* --- Price & Discount Styles --- */
 .price-box, .price-box-detail { 
     
-    margin-bottom: 15px;
+    /* margin-bottom: 15px; */
     margin-top: auto;
     display: flex;
     align-items: center;
