@@ -34,6 +34,43 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Socket.IO Listeners ---
+
+     socket.on('connect', () => {
+        console.log('Socket.IO connected successfully!');
+    });
+
+    socket.on('disconnect', () => {
+        console.log('Socket.IO disconnected.');
+    });
+
+    socket.on('bot_response', (response) => {
+        renderBotResponse(response.data);
+        suggestedRepliesContainer.style.display = 'flex';
+
+        // === NEW: SCROLL ANIMATION LOGIC ===
+        // First, check if there are actually any suggestion chips to animate
+        if (suggestedRepliesContainer.hasChildNodes()) {
+            
+            // The animation happens in two steps with a delay
+            setTimeout(() => {
+                // Step 1: Smoothly scroll to the right
+                suggestedRepliesContainer.scrollTo({
+                    left: 100, // Scroll 100 pixels to the right
+                    behavior: 'smooth'
+                });
+
+                // Step 2: After a brief pause, scroll back to the start
+                setTimeout(() => {
+                    suggestedRepliesContainer.scrollTo({
+                        left: 0, // Scroll back to the very beginning
+                        behavior: 'smooth'
+                    });
+                }, 800); // 800ms (0.8s) pause before returning
+            }, 500); // 500ms (0.5s) delay before starting the animation
+        }
+        // === END OF NEW LOGIC ===
+    });
+
     socket.on('connect', () => {
         console.log('Socket.IO connected successfully!');
     });
