@@ -1130,6 +1130,7 @@ html { box-sizing: border-box; }
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
+    white-space: nowrap; 
 }
 .suggestion-chip:hover {
     background-color: #007bff;
