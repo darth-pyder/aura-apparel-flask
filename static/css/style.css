@@ -1103,14 +1103,32 @@ html { box-sizing: border-box; }
 
 /* --- Suggested Replies (Corrected for Wrapping) --- */
 .suggested-replies {
-    padding: 0 15px 15px 15px; /* Adjust padding slightly */
-    display: flex;
-    flex-wrap: wrap; /* <-- THIS IS THE KEY FIX: Allows items to wrap */
-    gap: 10px;       /* Adds space between chips, both horizontally and vertically */
-    justify-content: flex-start; /* Aligns chips to the left */
+   display: flex; /* Establishes the flex layout */
+    gap: 10px; /* Creates consistent space between chips */
+    overflow-x: auto; /* THIS IS THE KEY: Enables horizontal scrolling */
+    padding: 0 15px 15px 15px; /* Provides internal spacing */
+    -webkit-overflow-scrolling: touch; /* Smooths scrolling on mobile */
 }
 
+/* This prevents the parent flex container from trying to wrap the chips */
+.suggested-replies::-webkit-scrollbar {
+    height: 6px; /* A thinner, more subtle scrollbar */
+}
+.suggested-replies::-webkit-scrollbar-track {
+    background: transparent; /* Make the track invisible */
+}
+.suggested-replies::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+.suggested-replies::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
+}
+
+
+
 .suggestion-chip {
+    flex-shrink: 0; /* THIS IS THE KEY: Prevents chips from shrinking */
     background-color: transparent;
     border: 1px solid #007bff;
     color: #007bff;
@@ -1120,11 +1138,11 @@ html { box-sizing: border-box; }
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    white-space: nowrap; /* Prevents text inside a single chip from breaking */
+
 }
 
 .suggestion-chip:hover {
-    background-color: #007bff;
+       background-color: #007bff;
     color: #fff;
 }
 
