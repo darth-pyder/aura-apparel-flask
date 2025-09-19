@@ -647,7 +647,7 @@ html { box-sizing: border-box; }
 .order-card { background: #fff; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 30px; }
 .order-header { padding: 20px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
 .checkout-success-container { padding: 80px 20px; text-align: center; }
-.chat-widget-container { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
+.chat-widget-container { position: fixed; bottom: 20px; right: 20px; z-index: 1030; }
 .chat-widget { width: 350px; height: 500px; /* etc */ }
 
 /* --- Footer --- */
@@ -973,7 +973,7 @@ html { box-sizing: border-box; }
     position: fixed;
     bottom: 20px; /* A bit of space from the edge */
     right: 20px;  /* A bit of space from the edge */
-    z-index: 1000;
+    z-index: 1030;
     /* We make the container just big enough for the button */
     width: 60px;
     height: 60px;
