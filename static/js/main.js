@@ -210,4 +210,16 @@ document.addEventListener('DOMContentLoaded', () => {
             lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // For Mobile or negative scrolling
         }, false);
     }
+
+    // --- NEW: Mobile Navigation Toggle ---
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const mobileNavPanel = document.getElementById('mobile-nav-panel');
+    const mainHeader = document.querySelector('.main-header');
+
+    if (hamburgerBtn && mobileNavPanel) {
+        hamburgerBtn.addEventListener('click', () => {
+            mobileNavPanel.classList.toggle('open');
+            hamburgerBtn.classList.toggle('is-active');
+        });
+    }
 });

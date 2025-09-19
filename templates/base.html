@@ -109,6 +109,15 @@
         </div>
     </header>
 
+    <!-- NEW: Mobile Navigation Panel -->
+    <div id="mobile-nav-panel" class="mobile-nav-panel">
+        <a href="{{ url_for('product_listing', category='Tops') }}">Tops</a>
+        <a href="{{ url_for('product_listing', category='Bottoms') }}">Bottoms</a>
+        <a href="{{ url_for('product_listing', category='Outerwear') }}">Outerwear</a>
+        <a href="{{ url_for('product_listing', category='Activewear') }}">Activewear</a>
+        <a href="{{ url_for('product_listing') }}">All Products</a>
+    </div>
+
     <!-- DEFINITIVE FINAL SEARCH PANEL -->
     <div id="search-panel" class="search-panel">
         <div class="container search-panel-content">
