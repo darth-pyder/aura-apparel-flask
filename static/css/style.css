@@ -3698,6 +3698,13 @@ html { box-sizing: border-box; }
     .header-nav {
         display: none !important;
     }
+
+    /* This hides all icon buttons and the account dropdown, EXCEPT the hamburger */
+    .header-right .icon-btn:not(.hamburger-btn),
+    .header-right .header-dropdown {
+        display: none !important;
+    }
+
     .hamburger-btn {
         display: flex !important; /* Use flex to center the icon */
         align-items: center;
