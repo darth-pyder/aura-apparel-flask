@@ -3645,13 +3645,24 @@ html { box-sizing: border-box; }
 }
 
 /* =================================================================== */
-/* ---               DEFINITIVE RESPONSIVE STYLES                  --- */
+/* ---        DEFINITIVE RESPONSIVE STYLES (CORRECTED V2)          --- */
 /* =================================================================== */
 
-/* --- 1. Header & Navigation (Mobile) --- */
+/* --- 1. Z-Index Stacking Order --- */
+/* This defines our layer hierarchy */
+/* Mobile Nav Panel (Top Layer) */
+.mobile-nav-panel { z-index: 1100; }
+/* Hamburger Button (Must be above panel to close it) */
+.hamburger-btn { z-index: 1101; } 
+/* Chat Widget (Above everything except the nav) */
+#chat-widget-container { z-index: 1030; }
+/* Search Panel (Standard Overlay) */
+.search-panel { z-index: 1010; }
+
+
+/* --- 2. Base Mobile Navigation Styles --- */
 .hamburger-btn {
-    display: none; /* Hidden on desktop */
-    z-index: 1101; /* Ensure it's on top */
+    display: none; /* Hidden by default on desktop */
 }
 
 .mobile-nav-panel {
@@ -3661,7 +3672,6 @@ html { box-sizing: border-box; }
     width: 100%;
     height: 100%;
     background-color: #fff;
-    z-index: 1050;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -3682,22 +3692,22 @@ html { box-sizing: border-box; }
 }
 
 
-/* --- 2. Tablet Breakpoint (Up to 992px) --- */
+/* --- 3. Tablet Breakpoint (Up to 992px) --- */
 @media (max-width: 992px) {
-    /* Hide desktop nav, show hamburger */
+    /* THE KEY FIX: Hide desktop nav and explicitly show the hamburger button */
     .header-nav {
-        display: none;
+        display: none !important;
     }
     .hamburger-btn {
-        display: block;
+        display: flex !important; /* Use flex to center the icon */
+        align-items: center;
+        justify-content: center;
     }
+    
     .header-container {
         justify-content: space-between;
     }
-    .header-left {
-        flex: 0 1 auto;
-    }
-    .header-right {
+    .header-left, .header-right {
         flex: 0 1 auto;
     }
 
@@ -3715,11 +3725,10 @@ html { box-sizing: border-box; }
         grid-template-columns: 1fr;
         gap: 50px;
     }
-    .category-links-grid {
+    .category-links-grid, .footer-container {
         grid-template-columns: 1fr;
     }
     .footer-container {
-        grid-template-columns: 1fr;
         text-align: center;
     }
     .product-detail-layout-editorial {
@@ -3730,7 +3739,7 @@ html { box-sizing: border-box; }
     }
 }
 
-/* --- 3. Mobile Breakpoint (Up to 768px) --- */
+/* --- 4. Mobile Breakpoint (Up to 768px) --- */
 @media (max-width: 768px) {
     body {
         font-size: 15px;
@@ -3744,46 +3753,21 @@ html { box-sizing: border-box; }
     }
     
     /* Typography */
-    .hero-headline {
-        font-size: 2.8rem;
-    }
-    h1, .story-main-title {
-        font-size: 2.2rem;
-    }
-    h2, .section-title {
-        font-size: 1.8rem;
-    }
-    .page-header h1 {
-        font-size: 2rem;
-    }
+    .hero-headline { font-size: 2.8rem; }
+    h1, .story-main-title { font-size: 2.2rem; }
+    h2, .section-title { font-size: 1.8rem; }
+    .page-header h1 { font-size: 2rem; }
 
     /* Layouts */
-    .page-layout-container {
-        gap: 20px;
-    }
-    .hero {
-        height: 90vh; /* Taller hero on mobile */
-    }
-    .hero-cta {
-        flex-direction: column;
-        align-items: center;
-    }
-    .glass-btn {
-        width: 100%;
-        max-width: 280px;
-    }
-    .search-panel {
-        width: 100%;
-        top: 71px;
-    }
+    .page-layout-container { gap: 20px; }
+    .hero { height: 90vh; }
+    .hero-cta { flex-direction: column; align-items: center; }
+    .glass-btn { width: 100%; max-width: 280px; }
+    .search-panel { width: 100%; top: 71px; }
 
     /* Cart Specifics */
-    .cart-layout {
-        gap: 20px;
-    }
-    .cart-table thead {
-        display: none; /* Hide table headers on mobile */
-    }
+    .cart-layout { gap: 20px; }
+    .cart-table thead { display: none; }
     .cart-table tr {
         display: block;
         border: 1px solid #e0e0e0;
@@ -3808,26 +3792,20 @@ html { box-sizing: border-box; }
     .col-product, .col-price, .col-quantity, .col-subtotal, .col-remove {
         width: 100%;
     }
-    .product-cell {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .product-cell img {
-        width: 100%;
-        max-width: 150px;
-        margin-bottom: 10px;
-    }
-    .col-remove {
-        justify-content: center;
-    }
-    /* Add data-label attributes in cart.html for this to work */
+    .product-cell { flex-direction: column; align-items: flex-start; }
+    .product-cell img { width: 100%; max-width: 150px; margin-bottom: 10px; }
+    .col-remove { justify-content: center; }
 
-    /* Chat Widget */
+    /* THE KEY FIX: Chatbot full-screen mode on mobile */
     .chat-widget {
-        width: 100%;
+        width: 100vw;
         height: 100%;
         bottom: 0;
         right: 0;
         border-radius: 0;
+        /* Ensure it covers everything when open */
+        position: fixed; 
+        top: 0;
+        left: 0;
     }
 }
