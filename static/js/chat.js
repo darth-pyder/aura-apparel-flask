@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- THIS IS THE KEY FIX ---
-    socket.on('bot_response', (response) => {
+    socket.off('bot_response').on('bot_response', (response) => {
         // The data from the server is now a complex object.
         // We pass this entire object to our new render function.
         renderBotResponse(response.data);

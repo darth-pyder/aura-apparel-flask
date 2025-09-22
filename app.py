@@ -861,14 +861,28 @@ def handle_connect():
 
 @socketio.on('user_message')
 def handle_user_message(json):
-    user_query = json['data']
-    chat_history = session.get('chat_history', [])
-    user_id = current_user.id if current_user.is_authenticated else None
-    bot_reply = get_rag_response(user_query, chat_history, user_id)
-    chat_history.append({'role': 'user', 'content': user_query})
-    chat_history.append({'role': 'assistant', 'content': bot_reply['text']})
-    session['chat_history'] = chat_history
-    socketio.emit('bot_response', {'data': bot_reply})
+    try:  # --- START OF NEW ERROR HANDLING
+        user_query = json['data']
+        chat_history = session.get('chat_history', [])
+        user_id = current_user.id if current_user.is_authenticated else None
+        
+        bot_reply = get_rag_response(user_query, chat_history, user_id)
+        
+        chat_history.append({'role': 'user', 'content': user_query})
+        chat_history.append({'role': 'assistant', 'content': bot_reply['text']})
+        session['chat_history'] = chat_history
+        
+        socketio.emit('bot_response', {'data': bot_reply})
+    except Exception as e:
+        # If ANY error occurs, log it to the server and send a safe message to the user
+        print(f"--- UNHANDLED ERROR IN CHATBOT: {e} ---")
+        error_reply = {
+            "text": "I'm sorry, I seem to have encountered an unexpected error. Please try a different question.",
+            "products": [],
+            "orders": []
+        }
+        socketio.emit('bot_response', {'data': error_reply})
+    # --- END OF NEW ERROR HANDLING
 
 if __name__ == '__main__':
     socketio.run(app)

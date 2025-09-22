@@ -1103,11 +1103,14 @@ html { box-sizing: border-box; }
 
 /* --- Suggested Replies (Corrected for Wrapping) --- */
 .suggested-replies {
-   display: flex; /* Establishes the flex layout */
-    gap: 10px; /* Creates consistent space between chips */
-    overflow-x: auto; /* THIS IS THE KEY: Enables horizontal scrolling */
-    padding: 0 15px 15px 15px; /* Provides internal spacing */
-    -webkit-overflow-scrolling: touch; /* Smooths scrolling on mobile */
+    padding: 0 20px 15px 20px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    min-height: 50px; /* <-- ADD THIS LINE to prevent layout collapse */
 }
 
 /* This prevents the parent flex container from trying to wrap the chips */

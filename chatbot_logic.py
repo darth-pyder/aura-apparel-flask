@@ -38,14 +38,16 @@ def find_bestsellers():
 def find_reviews_for_product(search_term):
     conn = get_db_connection()
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    # More robust cleaning: remove trigger words, then strip common words
     clean_search = re.sub(r'reviews for|people say about|thoughts on', '', search_term, flags=re.IGNORECASE).strip()
-    words = [word for word in clean_search.split() if word not in {'the', 'a', 'an'}]
+    words = [word for word in clean_search.split() if word.lower() not in {'the', 'a', 'an', 'on'}]
     if not words:
         cursor.close()
         conn.close()
         return []
+    # Use separate ILIKE conditions for each word
     conditions = " AND ".join(["p.name ILIKE %s"] * len(words))
-    params = [f"%{word.rstrip('s')}%" for word in words]
+    params = [f"%{word}%" for word in words] # Removed the problematic .rstrip('s')
     query = f"SELECT r.rating, r.comment, p.name FROM reviews r JOIN products p ON r.product_id = p.id WHERE {conditions} ORDER BY r.rating DESC LIMIT 3"
     cursor.execute(query, tuple(params))
     reviews = cursor.fetchall()
@@ -56,17 +58,25 @@ def find_reviews_for_product(search_term):
 def find_relevant_products(search_term):
     conn = get_db_connection()
     cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    # Normalize plurals and handle "t-shirt" variations
     normalized_term = re.sub(r't-?shirts?', 't-shirt', search_term.lower())
-    words = [word for word in normalized_term.split() if word not in {'a', 'some', 'your', 'me', 'about', 'do', 'have', 'any', 'show', 'find', 'get', 'for'}]
+    normalized_term = re.sub(r'jeans|pants|chinos|joggers|shorts', 'bottoms', normalized_term) # Group similar items
+    
+    # More carefully chosen stop words
+    stop_words = {'a', 'some', 'your', 'me', 'about', 'do', 'have', 'any', 'show', 'find', 'get', 'for', 'i', 'looking'}
+    words = [word for word in normalized_term.split() if word not in stop_words]
+    
     if not words:
         cursor.close()
         conn.close()
         return []
+        
     conditions = " AND ".join(["(name ILIKE %s OR brand ILIKE %s OR category ILIKE %s)"] * len(words))
     params = []
     for word in words:
-        param = f"%{word.rstrip('s')}%"
+        param = f"%{word.rstrip('s')}%" # Keep rstrip here as it's useful for general plurals
         params.extend([param, param, param])
+        
     query = f"SELECT * FROM products WHERE {conditions} ORDER BY num_ratings DESC, rating DESC LIMIT 3"
     cursor.execute(query, tuple(params))
     products = cursor.fetchall()
