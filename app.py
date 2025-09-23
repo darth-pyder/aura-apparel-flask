@@ -854,6 +854,45 @@ def get_reviews(product_id):
     cursor.close()
     return jsonify(reviews=[dict(row) for row in reviews_data])
 
+# --- START OF DATABASE DEBUGGING ROUTE ---
+# This is a temporary tool to diagnose the connection issue on Render.
+@app.route('/debug-db-connection')
+def debug_db_connection():
+    try:
+        # Step 1: Get the exact same database URL the app uses.
+        db_url = os.getenv("DATABASE_URL")
+        if db_url and 'sslmode' not in db_url:
+            db_url += "?sslmode=require"
+
+        # Step 2: Attempt to connect.
+        conn = psycopg2.connect(db_url)
+        
+        # Step 3: Attempt to run a simple query.
+        cursor = conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM products;")
+        product_count = cursor.fetchone()[0]
+        
+        # Step 4: Close the connection and report success.
+        cursor.close()
+        conn.close()
+        
+        return f"""
+            <h1>SUCCESS: Database Connection is Working!</h1>
+            <p>Successfully connected to the database and ran a query.</p>
+            <p><b>Product Count:</b> {product_count}</p>
+            <p>If you see this message, the chatbot should now be working correctly.</p>
+        """, 200
+
+    except Exception as e:
+        # If ANY error occurs, display it directly on the screen.
+        return f"""
+            <h1>ERROR: Database Connection Failed!</h1>
+            <p>The application could not connect to the database. This is why the chatbot is failing.</p>
+            <p><b>Here is the exact error message:</b></p>
+            <pre style="background-color: #f0f0f0; padding: 15px; border-radius: 5px; white-space: pre-wrap;">{e}</pre>
+        """, 500
+# --- END OF DATABASE DEBUGGING ROUTE ---
+
 # --- 11. SOCKETIO CHATBOT ---
 @socketio.on('connect')
 def handle_connect():
