@@ -9,6 +9,13 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import psycopg2
 import psycopg2.extras
 
+# Import your custom modules
+from chatbot_logic import get_rag_response
+from ai_prompts import generate_content
+
+# --- 1. APP SETUP & CONFIGURATION ---
+app = Flask(__name__)
+
 # IMPORTANT: REMOVE THIS AFTER YOU USE IT ONCE!
 from setup_database import setup_database
 @app.route('/super-secret-admin-setup-route-12345')
@@ -26,12 +33,6 @@ def run_database_setup():
 # --- END OF TEMPORARY ROUTE ---
 
 
-# Import your custom modules
-from chatbot_logic import get_rag_response
-from ai_prompts import generate_content
-
-# --- 1. APP SETUP & CONFIGURATION ---
-app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'a-super-secret-key-that-you-should-change')
 # Use eventlet as the async mode for Gunicorn compatibility on Render
 
