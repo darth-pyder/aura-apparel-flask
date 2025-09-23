@@ -15,24 +15,6 @@ from ai_prompts import generate_content
 
 # --- 1. APP SETUP & CONFIGURATION ---
 app = Flask(__name__)
-
-# IMPORTANT: REMOVE THIS AFTER YOU USE IT ONCE!
-from setup_database import setup_database
-@app.route('/super-secret-admin-setup-route-12345')
-def run_database_setup():
-    try:
-        # We must explicitly tell psycopg2 to use SSL for this to work on Render
-        os.environ['PGSSLMODE'] = 'require'
-        setup_database()
-        # Clean up the environment variable after use
-        os.environ.pop('PGSSLMODE', None)
-        return "SUCCESS: The database has been fully set up and seeded.", 200
-    except Exception as e:
-        os.environ.pop('PGSSLMODE', None)
-        return f"ERROR: An error occurred during database setup: {e}", 500
-# --- END OF TEMPORARY ROUTE ---
-
-
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'a-super-secret-key-that-you-should-change')
 # Use eventlet as the async mode for Gunicorn compatibility on Render
 
@@ -82,7 +64,11 @@ def load_user(user_id):
 # --- 3. DATABASE CONNECTION ---
 def get_db():
     if 'db' not in g:
-        g.db = psycopg2.connect(os.getenv("DATABASE_URL"))
+        # THE KEY FIX: Append '?sslmode=require' to the database URL.
+        db_url = os.getenv("DATABASE_URL")
+        if db_url and 'sslmode' not in db_url:
+             db_url += "?sslmode=require"
+        g.db = psycopg2.connect(db_url)
     return g.db
 
 @app.teardown_appcontext

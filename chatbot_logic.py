@@ -24,10 +24,13 @@ model = genai.GenerativeModel('gemini-1.5-flash-latest', safety_settings=safety_
 
 # --- 2. DATABASE TOOLS (Rewritten for Robustness) ---
 def get_db_connection():
-    """Establishes a connection to the PostgreSQL database from the environment variable."""
-    conn = psycopg2.connect(os.getenv("DATABASE_URL"))
+    """Establishes a secure connection to the PostgreSQL database."""
+    # THE KEY FIX: Append '?sslmode=require' to the database URL.
+    db_url = os.getenv("DATABASE_URL")
+    if db_url and 'sslmode' not in db_url:
+        db_url += "?sslmode=require"
+    conn = psycopg2.connect(db_url)
     return conn
-
 def find_bestsellers():
     # This function was already robust.
     conn = get_db_connection()
