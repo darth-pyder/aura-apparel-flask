@@ -904,12 +904,18 @@ def handle_connect():
 
 @socketio.on('user_message')
 def handle_user_message(json):
-    try:  # --- START OF NEW ERROR HANDLING
+    try:
+        # THE KEY FIX: Get the database URL inside the reliable Flask context.
+        db_url = os.getenv("DATABASE_URL")
+        if db_url and 'sslmode' not in db_url:
+            db_url += "?sslmode=require"
+
         user_query = json['data']
         chat_history = session.get('chat_history', [])
         user_id = current_user.id if current_user.is_authenticated else None
         
-        bot_reply = get_rag_response(user_query, chat_history, user_id)
+        # Pass the known-good db_url to the RAG response function.
+        bot_reply = get_rag_response(user_query, chat_history, user_id, db_url)
         
         chat_history.append({'role': 'user', 'content': user_query})
         chat_history.append({'role': 'assistant', 'content': bot_reply['text']})
@@ -917,13 +923,8 @@ def handle_user_message(json):
         
         socketio.emit('bot_response', {'data': bot_reply})
     except Exception as e:
-        # If ANY error occurs, log it to the server and send a safe message to the user
         print(f"--- UNHANDLED ERROR IN CHATBOT: {e} ---")
-        error_reply = {
-            "text": "I'm sorry, I seem to have encountered an unexpected error. Please try a different question.",
-            "products": [],
-            "orders": []
-        }
+        error_reply = {"text": "I'm sorry, an unexpected error occurred. Please try again."}
         socketio.emit('bot_response', {'data': error_reply})
     # --- END OF NEW ERROR HANDLING
 
