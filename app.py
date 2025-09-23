@@ -9,6 +9,23 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import psycopg2
 import psycopg2.extras
 
+# IMPORTANT: REMOVE THIS AFTER YOU USE IT ONCE!
+from setup_database import setup_database
+@app.route('/super-secret-admin-setup-route-12345')
+def run_database_setup():
+    try:
+        # We must explicitly tell psycopg2 to use SSL for this to work on Render
+        os.environ['PGSSLMODE'] = 'require'
+        setup_database()
+        # Clean up the environment variable after use
+        os.environ.pop('PGSSLMODE', None)
+        return "SUCCESS: The database has been fully set up and seeded.", 200
+    except Exception as e:
+        os.environ.pop('PGSSLMODE', None)
+        return f"ERROR: An error occurred during database setup: {e}", 500
+# --- END OF TEMPORARY ROUTE ---
+
+
 # Import your custom modules
 from chatbot_logic import get_rag_response
 from ai_prompts import generate_content
