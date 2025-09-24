@@ -37,7 +37,8 @@
         {% endif %}
     {% endwith %}
 
-    <!--      DEFINITIVE FINAL HEADER (BUGFIXED)                -->
+    <!-- ====================================================== -->
+    <!--      DEFINITIVE FINAL HEADER (HAMBURGER INCLUDED)      -->
     <!-- ====================================================== -->
     <header class="main-header">
         <div class="header-container">
@@ -46,43 +47,18 @@
                 <a href="/" class="header-logo">AURA</a>
             </div>
 
-            <!-- Group 2: Center (Navigation) -->
+            <!-- Group 2: Center (Desktop Navigation) -->
             <nav class="header-group header-nav">
-                <!-- <ul>
-                    <li><a href="{{ url_for('product_listing', category='Tops') }}">Tops</a></li>
-                    <li><a href="{{ url_for('product_listing', category='Bottoms') }}">Bottoms</a></li>
-                    <li><a href="{{ url_for('product_listing', category='Outerwear') }}">Outerwear</a></li>
-                    <li><a href="{{ url_for('product_listing', category='Activewear') }}">Activewear</a></li>
-                    <li><a href="{{ url_for('product_listing') }}">All Products</a></li>
-                </ul> -->
-
                 <ul>
-                        <!-- THIS IS THE NEW, CORRECTED NAVIGATION -->
-                        <li>
-                            <a href="{{ url_for('product_listing', category='Tops') }}" 
-                               class="{{ 'active' if active_filters and active_filters.category == 'Tops' else '' }}">Tops</a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('product_listing', category='Bottoms') }}" 
-                               class="{{ 'active' if active_filters and active_filters.category == 'Bottoms' else '' }}">Bottoms</a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('product_listing', category='Outerwear') }}" 
-                               class="{{ 'active' if active_filters and active_filters.category == 'Outerwear' else '' }}">Outerwear</a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('product_listing', category='Activewear') }}" 
-                               class="{{ 'active' if active_filters and active_filters.category == 'Activewear' else '' }}">Activewear</a>
-                        </li>
-                        <li>
-                            <!-- This is active if NO category is selected -->
-                            <a href="{{ url_for('product_listing') }}" 
-                               class="{{ 'active' if active_filters and not active_filters.category else '' }}">All Products</a>
-                        </li>
-                    </ul>
+                    <li><a href="{{ url_for('product_listing', category='Tops') }}" class="{{ 'active' if active_filters and active_filters.category == 'Tops' else '' }}">Tops</a></li>
+                    <li><a href="{{ url_for('product_listing', category='Bottoms') }}" class="{{ 'active' if active_filters and active_filters.category == 'Bottoms' else '' }}">Bottoms</a></li>
+                    <li><a href="{{ url_for('product_listing', category='Outerwear') }}" class="{{ 'active' if active_filters and active_filters.category == 'Outerwear' else '' }}">Outerwear</a></li>
+                    <li><a href="{{ url_for('product_listing', category='Activewear') }}" class="{{ 'active' if active_filters and active_filters.category == 'Activewear' else '' }}">Activewear</a></li>
+                    <li><a href="{{ url_for('product_listing') }}" class="{{ 'active' if not (active_filters and active_filters.category) else '' }}">All Products</a></li>
+                </ul>
             </nav>
 
-            <!-- Group 3: Right (Icons) -->
+            <!-- Group 3: Right (Icons & Mobile Trigger) -->
             <div class="header-group header-right">
                 <button id="search-panel-trigger" class="icon-btn" title="Search">
                     <i class="ph ph-magnifying-glass icon-search"></i>
@@ -105,6 +81,11 @@
                     <i class="ph ph-shopping-bag-open"></i>
                     {% if cart_item_count > 0 %}<span class="cart-count-badge">{{ cart_item_count }}</span>{% endif %}
                 </a>
+                
+                <!-- THIS IS THE CRITICAL FIX: ADD THIS BUTTON -->
+                <button id="hamburger-btn" class="icon-btn hamburger-btn">
+                    <i class="ph ph-list"></i>
+                </button>
             </div>
         </div>
     </header>
