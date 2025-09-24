@@ -3834,3 +3834,10 @@ html { box-sizing: border-box; }
 .hamburger-btn.is-active .icon-close {
     display: block; /* ...and show the 'X' (close) icon. */
 }
+
+.hamburger-btn.is-active {
+    position: fixed; /* Lifts the button out of the document flow */
+    top: 20px;       /* Positions it from the top of the screen */
+    right: 1rem;     /* Aligns it with the header's mobile padding */
+    color: #282c3f;  /* Ensures the 'X' icon is dark on the white menu background */
+}
