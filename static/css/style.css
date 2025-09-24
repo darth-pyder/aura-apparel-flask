@@ -3697,13 +3697,19 @@ html { box-sizing: border-box; }
 
 /* --- 3. Tablet Breakpoint (Up to 992px) --- */
 @media (max-width: 992px) {
-    /* THE KEY FIX: Hide desktop nav and explicitly show the hamburger button */
+    /* Hide desktop nav and show hamburger */
     .header-nav {
         display: none !important;
     }
-    
+
+    /* THE HAMBURGER FIX: Hide all icons EXCEPT the hamburger button */
+    .header-right .icon-btn:not(.hamburger-btn),
+    .header-right .header-dropdown {
+        display: none !important;
+    }
+
     .hamburger-btn {
-        display: flex !important; /* Use flex to center the icon */
+        display: flex !important;
         align-items: center;
         justify-content: center;
     }
@@ -3717,20 +3723,19 @@ html { box-sizing: border-box; }
 
     /* Adjust complex layouts */
     .account-layout, .checkout-layout, .order-details-layout, .cart-layout {
-        grid-template-columns: 1fr; /* Stack to single column */
+        grid-template-columns: 1fr;
     }
     .checkout-sidebar {
-        grid-row: 1; /* Move order summary to top on mobile checkout */
+        grid-row: 1;
     }
     .product-grid {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     }
-    .pillars-grid {
+    .pillars-grid, .category-links-grid, .footer-container {
         grid-template-columns: 1fr;
-        gap: 50px;
     }
-    .category-links-grid, .footer-container {
-        grid-template-columns: 1fr;
+    .pillars-grid {
+        gap: 50px;
     }
     .footer-container {
         text-align: center;
@@ -3739,7 +3744,7 @@ html { box-sizing: border-box; }
         grid-template-columns: 1fr;
     }
     .product-detail-info {
-        position: static; /* Unstick the info column */
+        position: static;
     }
 }
 
