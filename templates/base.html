@@ -54,7 +54,7 @@
                     <li><a href="{{ url_for('product_listing', category='Bottoms') }}" class="{{ 'active' if active_filters and active_filters.category == 'Bottoms' else '' }}">Bottoms</a></li>
                     <li><a href="{{ url_for('product_listing', category='Outerwear') }}" class="{{ 'active' if active_filters and active_filters.category == 'Outerwear' else '' }}">Outerwear</a></li>
                     <li><a href="{{ url_for('product_listing', category='Activewear') }}" class="{{ 'active' if active_filters and active_filters.category == 'Activewear' else '' }}">Activewear</a></li>
-                    <li><a href="{{ url_for('product_listing') }}" class="{{ 'active' if not (active_filters and active_filters.category) else '' }}">All Products</a></li>
+                    <li><a href="{{ url_for('product_listing') }}" class="{{ 'active' if request.endpoint == 'product_listing' and not (active_filters and active_filters.category) else '' }}">All Products</a></li>
                 </ul>
             </nav>
 
@@ -84,7 +84,8 @@
                 
                 <!-- THIS IS THE CRITICAL FIX: ADD THIS BUTTON -->
                 <button id="hamburger-btn" class="icon-btn hamburger-btn">
-                    <i class="ph ph-list"></i>
+                    <i class="ph ph-list icon-open"></i>
+                    <i class="ph ph-x icon-close"></i>
                 </button>
             </div>
         </div>

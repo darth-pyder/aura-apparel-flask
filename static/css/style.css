@@ -3818,3 +3818,19 @@ html { box-sizing: border-box; }
         left: 0;
     }
 }
+
+/* --- FINAL HAMBURGER ICON TOGGLE LOGIC --- */
+
+/* By default, the 'X' (close) icon is hidden */
+.hamburger-btn .icon-close {
+    display: none;
+}
+
+/* When the menu is open, the button gets the .is-active class... */
+.hamburger-btn.is-active .icon-open {
+    display: none; /* ...so we hide the 'list' (hamburger) icon... */
+}
+
+.hamburger-btn.is-active .icon-close {
+    display: block; /* ...and show the 'X' (close) icon. */
+}
