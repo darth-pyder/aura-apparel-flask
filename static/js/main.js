@@ -211,15 +211,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }, false);
     }
 
-    // --- NEW: Mobile Navigation Toggle ---
+        // --- NEW: Mobile Navigation Toggle (V2 - Body Scroll Lock) ---
     const hamburgerBtn = document.getElementById('hamburger-btn');
     const mobileNavPanel = document.getElementById('mobile-nav-panel');
-    const mainHeader = document.querySelector('.main-header');
+    const bodyEl = document.body;
 
     if (hamburgerBtn && mobileNavPanel) {
         hamburgerBtn.addEventListener('click', () => {
+            // Toggle the classes on the elements
             mobileNavPanel.classList.toggle('open');
             hamburgerBtn.classList.toggle('is-active');
+            
+            // THE KEY FIX: Toggle a class on the body to prevent scrolling
+            bodyEl.classList.toggle('mobile-menu-open');
         });
     }
 });

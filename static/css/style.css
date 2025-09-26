@@ -3648,44 +3648,37 @@ html { box-sizing: border-box; }
 }
 
 /* =================================================================== */
-/* ---        DEFINITIVE RESPONSIVE STYLES (CORRECTED V2)          --- */
+/* ---        DEFINITIVE RESPONSIVE STYLES (FINAL VERSION)         --- */
 /* =================================================================== */
 
-/* --- 1. Z-Index Stacking Order --- */
-/* This defines our layer hierarchy */
-/* Mobile Nav Panel (Top Layer) */
-.mobile-nav-panel { z-index: 1100; }
-/* Hamburger Button (Must be above panel to close it) */
-.hamburger-btn { z-index: 1101; } 
-/* Chat Widget (Above everything except the nav) */
-#chat-widget-container { z-index: 1030; }
-/* Search Panel (Standard Overlay) */
-.search-panel { z-index: 1010; }
-
-
-/* --- 2. Base Mobile Navigation Styles --- */
-.hamburger-btn {
-    display: none; /* Hidden by default on desktop */
+/* --- 1. Mobile Menu Body Lock --- */
+/* When this class is on the body, it prevents scrolling */
+body.mobile-menu-open {
+    overflow: hidden;
 }
 
+/* --- 2. Mobile Header & Navigation Base Styles --- */
+.hamburger-btn {
+    display: none; /* Hidden on desktop */
+    z-index: 1101; /* Must be on top of everything */
+}
 .mobile-nav-panel {
     position: fixed;
     top: 0;
-    left: -100%; /* Start off-screen */
+    left: -100%;
     width: 100%;
     height: 100%;
     background-color: #fff;
+    z-index: 1100;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     transition: left 0.3s ease-in-out;
 }
-
 .mobile-nav-panel.open {
-    left: 0; /* Slide in */
+    left: 0;
 }
-
 .mobile-nav-panel a {
     font-size: 2rem;
     color: #282c3f;
@@ -3694,150 +3687,86 @@ html { box-sizing: border-box; }
     font-family: 'Playfair Display', serif;
 }
 
+/* --- 3. Close Button ('X') Logic --- */
+.hamburger-btn .icon-close { display: none; }
+.hamburger-btn.is-active {
+    position: fixed; /* Lifts the button out of the header flow */
+    top: 20px;
+    right: 1rem;
+}
+.hamburger-btn.is-active .icon-open { display: none; }
+.hamburger-btn.is-active .icon-close { display: block; }
 
-/* --- 3. Tablet Breakpoint (Up to 992px) --- */
+
+/* --- 4. Tablet & Mobile Breakpoints --- */
 @media (max-width: 992px) {
-    /* Hide desktop nav and show hamburger */
-    .header-nav {
-        display: none !important;
+    /* Stabilize the header by making it fixed on mobile */
+    .main-header {
+        position: fixed;
+        width: 100%;
+    }
+    .main-header.hidden {
+        top: -80px; /* Adjust if header height changes */
+    }
+    /* Add padding to the top of the body to prevent content from hiding under the fixed header */
+    body {
+        padding-top: 80px; /* Match the header height */
     }
 
-    /* THE HAMBURGER FIX: Hide all icons EXCEPT the hamburger button */
+    /* Hide desktop nav and icons, show hamburger */
+    .header-nav { display: none !important; }
     .header-right .icon-btn:not(.hamburger-btn),
-    .header-right .header-dropdown {
-        display: none !important;
-    }
-
-    .hamburger-btn {
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-    }
+    .header-right .header-dropdown { display: none !important; }
+    .hamburger-btn { display: flex !important; align-items: center; justify-content: center; }
     
-    .header-container {
-        justify-content: space-between;
-    }
-    .header-left, .header-right {
-        flex: 0 1 auto;
-    }
-
-    /* Adjust complex layouts */
-    .account-layout, .checkout-layout, .order-details-layout, .cart-layout {
-        grid-template-columns: 1fr;
-    }
-    .checkout-sidebar {
-        grid-row: 1;
-    }
-    .product-grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    }
-    .pillars-grid, .category-links-grid, .footer-container {
-        grid-template-columns: 1fr;
-    }
-    .pillars-grid {
-        gap: 50px;
-    }
+    /* Adjust page layouts */
+    .account-layout, .checkout-layout, .order-details-layout, .cart-layout,
+    .product-detail-layout-editorial, .pillars-grid, .category-links-grid,
     .footer-container {
-        text-align: center;
-    }
-    .product-detail-layout-editorial {
         grid-template-columns: 1fr;
     }
-    .product-detail-info {
-        position: static;
-    }
+    .checkout-sidebar { grid-row: 1; }
+    .pillars-grid { gap: 50px; }
+    .footer-container { text-align: center; }
+    .product-detail-info { position: static; }
 }
 
-/* --- 4. Mobile Breakpoint (Up to 768px) --- */
 @media (max-width: 768px) {
-    body {
-        font-size: 15px;
-    }
-    .container, .page-layout-container {
-        padding: 20px 15px;
-    }
-    .main-header {
-        padding: 0 1rem;
-        height: 70px;
-    }
-    
-    /* Typography */
+    /* Adjust header and body padding for smaller screens */
+    .main-header { height: 70px; padding: 0 1rem; }
+    body { padding-top: 70px; }
+
+    /* Adjust typography */
     .hero-headline { font-size: 2.8rem; }
     h1, .story-main-title { font-size: 2.2rem; }
     h2, .section-title { font-size: 1.8rem; }
     .page-header h1 { font-size: 2rem; }
 
-    /* Layouts */
-    .page-layout-container { gap: 20px; }
-    .hero { height: 90vh; }
+    /* Adjust hero layout */
     .hero-cta { flex-direction: column; align-items: center; }
     .glass-btn { width: 100%; max-width: 280px; }
-    .search-panel { width: 100%; top: 71px; }
+    
+    /* Make chat full-screen */
+    .chat-widget {
+        width: 100vw; height: 100vh; top: 0; left: 0;
+        bottom: 0; right: 0; border-radius: 0;
+    }
 
-    /* Cart Specifics */
-    .cart-layout { gap: 20px; }
+    /* Correct cart table layout on mobile */
     .cart-table thead { display: none; }
     .cart-table tr {
-        display: block;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        padding: 15px;
+        display: block; border: 1px solid #e0e0e0; border-radius: 8px;
+        margin-bottom: 20px; padding: 15px;
     }
     .cart-table td {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border: none;
-        padding: 10px 0;
-        text-align: right;
+        display: flex; justify-content: space-between; align-items: center;
+        border: none; padding: 10px 0; text-align: right;
     }
     .cart-table td::before {
-        content: attr(data-label);
-        font-weight: 700;
-        margin-right: 10px;
-        text-align: left;
+        content: attr(data-label); font-weight: 700; text-align: left;
     }
-    .col-product, .col-price, .col-quantity, .col-subtotal, .col-remove {
-        width: 100%;
-    }
+    .col-product, .col-price, .col-quantity, .col-subtotal, .col-remove { width: 100%; }
     .product-cell { flex-direction: column; align-items: flex-start; }
-    .product-cell img { width: 100%; max-width: 150px; margin-bottom: 10px; }
+    .product-cell img { max-width: 150px; margin-bottom: 10px; }
     .col-remove { justify-content: center; }
-
-    /* THE KEY FIX: Chatbot full-screen mode on mobile */
-    .chat-widget {
-        width: 100vw;
-        height: 100%;
-        bottom: 0;
-        right: 0;
-        border-radius: 0;
-        /* Ensure it covers everything when open */
-        position: fixed; 
-        top: 0;
-        left: 0;
-    }
-}
-
-/* --- FINAL HAMBURGER ICON TOGGLE LOGIC --- */
-
-/* By default, the 'X' (close) icon is hidden */
-.hamburger-btn .icon-close {
-    display: none;
-}
-
-/* When the menu is open, the button gets the .is-active class... */
-.hamburger-btn.is-active .icon-open {
-    display: none; /* ...so we hide the 'list' (hamburger) icon... */
-}
-
-.hamburger-btn.is-active .icon-close {
-    display: block; /* ...and show the 'X' (close) icon. */
-}
-
-.hamburger-btn.is-active {
-    position: fixed; /* Lifts the button out of the document flow */
-    top: 20px;       /* Positions it from the top of the screen */
-    right: 1rem;     /* Aligns it with the header's mobile padding */
-    color: #282c3f;  /* Ensures the 'X' icon is dark on the white menu background */
 }
