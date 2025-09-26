@@ -3690,9 +3690,10 @@ body.mobile-menu-open {
 /* --- 3. Close Button ('X') Logic --- */
 .hamburger-btn .icon-close { display: none; }
 .hamburger-btn.is-active {
-    position: fixed; /* Lifts the button out of the header flow */
+    position: fixed;
     top: 20px;
     right: 1rem;
+    color: #282c3f; /* <-- ADD THIS LINE */
 }
 .hamburger-btn.is-active .icon-open { display: none; }
 .hamburger-btn.is-active .icon-close { display: block; }
