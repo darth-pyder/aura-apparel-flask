@@ -3856,3 +3856,86 @@ body.filters-open {
         color: #333;
     }
 }
+
+/* =================================================================== */
+/* ---        DEFINITIVE MOBILE CART UI (FINAL VERSION)            --- */
+/* =================================================================== */
+
+@media (max-width: 768px) {
+    /* Hide the desktop table header */
+    .cart-table thead {
+        display: none;
+    }
+
+    /* Redesigns the table row into a card */
+    .cart-table tr {
+        display: block;
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    /* Remove the old pseudo-element labels and flex behavior */
+    .cart-table td::before {
+        display: none;
+    }
+    .cart-table td {
+        display: block;
+        padding: 0;
+        border: none;
+    }
+
+    /* Styles the top part of the card (image + info) */
+    .cart-item-info-cell {
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .cart-item-info-cell .product-cell {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    .cart-item-info-cell .cart-product-image {
+        width: 80px;
+        flex-shrink: 0;
+    }
+    .cart-item-name-link {
+        font-weight: 600;
+        color: #282c3f;
+        text-decoration: none;
+    }
+    .cart-item-info-cell .price-cell {
+        margin-top: 5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    /* Styles the bottom action bar */
+    .cart-item-actions-cell {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .update-form-mobile {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .update-form-mobile .form-select-sm {
+        width: 110px;
+    }
+    .update-form-mobile .form-control-sm {
+        width: 60px;
+    }
+    .btn-remove-mobile {
+        background: none;
+        border: none;
+        color: #dc3545;
+        font-weight: 600;
+        padding: 0;
+    }
+}
