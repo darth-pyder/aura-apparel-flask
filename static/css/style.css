@@ -3750,8 +3750,24 @@ body.mobile-menu-open {
     
     /* Make chat full-screen */
     .chat-widget {
-        width: 100vw; height: 100vh; top: 0; left: 0;
-        bottom: 0; right: 0; border-radius: 0;
+        /* Define the full-screen dimensions */
+        width: 100vw;
+        height: 100vh; /* Use vh for full viewport height */
+        top: 0;
+        left: 0;
+        border-radius: 0;
+        
+        /* Re-apply the initial hidden state for mobile */
+        transform: scale(0);
+        opacity: 0;
+        transform-origin: bottom right;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    
+    /* Define the open state for mobile */
+    .chat-widget.open {
+        transform: scale(1);
+        opacity: 1;
     }
 
     /* Correct cart table layout on mobile */
