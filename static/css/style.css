@@ -3733,6 +3733,7 @@ body.mobile-menu-open {
     .product-detail-info { position: static; }
 }
 
+/* --- 4. Mobile Breakpoint (Up to 768px) --- [DEFINITIVE FINAL VERSION] */
 @media (max-width: 768px) {
     /* Adjust header and body padding for smaller screens */
     .main-header { height: 70px; padding: 0 1rem; }
@@ -3748,27 +3749,20 @@ body.mobile-menu-open {
     .hero-cta { flex-direction: column; align-items: center; }
     .glass-btn { width: 100%; max-width: 280px; }
     
-    /* Make chat full-screen */
+    /* --- THIS IS THE FINAL CHATBOT FIX --- */
+    /* On mobile, only change the dimensions and position of the chat widget.
+       Do NOT touch the transform or opacity, as those are handled by the base CSS rules. */
     .chat-widget {
-        /* Define the full-screen dimensions */
-        width: 100vw;
+        width: 100vw; 
         height: 100vh; /* Use vh for full viewport height */
         top: 0;
         left: 0;
+        right: auto;
+        bottom: auto;
         border-radius: 0;
-        
-        /* Re-apply the initial hidden state for mobile */
-        transform: scale(0);
-        opacity: 0;
-        transform-origin: bottom right;
-        transition: transform 0.3s ease, opacity 0.3s ease;
+        position: fixed; /* Ensure it covers the screen */
     }
-    
-    /* Define the open state for mobile */
-    .chat-widget.open {
-        transform: scale(1);
-        opacity: 1;
-    }
+    /* --- END OF FIX --- */
 
     /* Correct cart table layout on mobile */
     .cart-table thead { display: none; }
