@@ -91,13 +91,48 @@
         </div>
     </header>
 
-    <!-- NEW: Mobile Navigation Panel -->
+    <!-- NEW: Mobile Navigation Panel (V2 - With Actions) -->
     <div id="mobile-nav-panel" class="mobile-nav-panel">
-        <a href="{{ url_for('product_listing', category='Tops') }}">Tops</a>
-        <a href="{{ url_for('product_listing', category='Bottoms') }}">Bottoms</a>
-        <a href="{{ url_for('product_listing', category='Outerwear') }}">Outerwear</a>
-        <a href="{{ url_for('product_listing', category='Activewear') }}">Activewear</a>
-        <a href="{{ url_for('product_listing') }}">All Products</a>
+        <!-- Main Navigation Links -->
+        <div class="mobile-nav-main">
+            <a href="{{ url_for('product_listing', category='Tops') }}">Tops</a>
+            <a href="{{ url_for('product_listing', category='Bottoms') }}">Bottoms</a>
+            <a href="{{ url_for('product_listing', category='Outerwear') }}">Outerwear</a>
+            <a href="{{ url_for('product_listing', category='Activewear') }}">Activewear</a>
+            <a href="{{ url_for('product_listing') }}">All Products</a>
+        </div>
+
+        <!-- Secondary Search and Actions -->
+        <div class="mobile-nav-secondary">
+            <form action="{{ url_for('product_listing') }}" method="GET" class="mobile-search-form">
+                <input type="search" name="q" placeholder="Search products..." autocomplete="off">
+                <button type="submit"><i class="ph ph-magnifying-glass"></i></button>
+            </form>
+            <div class="mobile-nav-actions">
+                <a href="{{ url_for('wishlist') }}" class="icon-btn" title="Wishlist">
+                    <i class="ph ph-heart"></i>
+                    <span>Wishlist</span>
+                </a>
+                
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('account') }}" class="icon-btn" title="My Account">
+                        <i class="ph ph-user"></i>
+                        <span>My Account</span>
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="icon-btn" title="Sign In">
+                        <i class="ph ph-user"></i>
+                        <span>Sign In</span>
+                    </a>
+                {% endif %}
+
+                <a href="{{ url_for('view_cart') }}" class="icon-btn cart-icon-link" title="Bag">
+                    <i class="ph ph-shopping-bag-open"></i>
+                    <span>Bag</span>
+                    {% if cart_item_count > 0 %}<span class="cart-count-badge">{{ cart_item_count }}</span>{% endif %}
+                </a>
+            </div>
+        </div>
     </div>
 
     <!-- DEFINITIVE FINAL SEARCH PANEL -->
