@@ -27,45 +27,59 @@
                 </thead>
                 <tbody>
                     {% for item in cart_products %}
+                    <!-- The form now wraps the entire table row to capture all inputs -->
+                    <form action="{{ url_for('update_cart', cart_key=item.cart_key) }}" method="POST">
                     <tr>
-                        <!-- NEW: A single cell for all product info -->
-                        <td class="cart-item-info-cell">
+                        <td data-label="Product" class="col-product">
                             <div class="product-cell">
-                                <a href="{{ url_for('product_detail', product_id=item.id) }}">
+                                <!-- MODIFIED: Larger image in a container -->
+                                <a href="{{ url_for('product_detail', product_id=item.id) }}" class="cart-product-image-link">
                                     <img src="{{ url_for('static', filename='images/products/' + item.image_url) }}" alt="{{ item.name }}" class="cart-product-image">
                                 </a>
                                 <div class="cart-product-details">
-                                    <a href="{{ url_for('product_detail', product_id=item.id) }}" class="cart-item-name-link">{{ item.name }}</a>
-                                    <div class="price-cell">
-                                        <span class="sale-price">₹{{ "%.0f"|format(item.sale_price) }}</span>
-                                        {% if item.discount_percent > 0 %}
-                                        <span class="original-price">₹{{ "%.0f"|format(item.original_price) }}</span>
-                                        {% endif %}
+                                    <span>{{ item.name }}</span>
+                                    <!-- NEW: Size selector is now here -->
+                                    <div class="cart-size-selector">
+                                        <label for="inventory_id_{{ item.id }}">Size:</label>
+                                        <select name="inventory_id" id="inventory_id_{{ item.id }}" class="form-select form-select-sm">
+                                            {% for inv in item.available_inventory %}
+                                                <option value="{{ inv.id }}" {% if inv.id == item.inventory_id %}selected{% endif %} {% if inv.stock_quantity == 0 %}disabled{% endif %}>
+                                                    {{ inv.size }} {% if inv.stock_quantity == 0 %}(Out of Stock){% endif %}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
                                     </div>
                                 </div>
                             </div>
                         </td>
-
-                        <!-- NEW: A single cell for all actions -->
-                        <td class="cart-item-actions-cell">
-                            <!-- Remove Form -->
-                            <form action="{{ url_for('remove_from_cart', cart_key=item.cart_key) }}" method="POST">
-                                <button type="submit" class="btn-remove-mobile">Remove</button>
+                        <td data-label="Price" class="col-price">
+                            <div class="price-cell">
+                                <span class="sale-price">₹{{ "%.0f"|format(item.sale_price) }}</span>
+                                {% if item.discount_percent > 0 %}
+                                <span class="original-price">₹{{ "%.0f"|format(item.original_price) }}</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                         <td data-label="Quantity" class="col-quantity">
+                            <!-- DEFINITIVE FIX: This is now a single, self-contained form for updating -->
+                            <form action="{{ url_for('update_cart', cart_key=item.cart_key) }}" method="POST" class="update-form">
+                                <div class="cart-quantity-controls">
+                                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="10" class="form-control form-control-sm">
+                                    <button type="submit" class="btn btn-secondary btn-sm">Update</button>
+                                </div>
                             </form>
-                            <!-- Update Form -->
-                            <form action="{{ url_for('update_cart', cart_key=item.cart_key) }}" method="POST" class="update-form-mobile">
-                                <select name="inventory_id" class="form-select form-select-sm">
-                                    {% for inv in item.available_inventory %}
-                                        <option value="{{ inv.id }}" {% if inv.id == item.inventory_id %}selected{% endif %} {% if inv.stock_quantity == 0 %}disabled{% endif %}>
-                                            Size: {{ inv.size }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="10" class="form-control form-control-sm">
-                                <button type="submit" class="btn btn-secondary btn-sm">Update</button>
+                        </td>
+                        <td data-label="Subtotal" class="col-subtotal">
+                            <strong>₹{{ "%.0f"|format(item.subtotal) }}</strong>
+                        </td>
+                        <td data-label="Remove" class="col-remove">
+                            <!-- DEFINITIVE FIX: This is a separate, self-contained form for removing -->
+                            <form action="{{ url_for('remove_from_cart', cart_key=item.cart_key) }}" method="POST">
+                                <button type="submit" class="btn-remove">&times;</button>
                             </form>
                         </td>
                     </tr>
+                    </form> <!-- The form for the row ends here -->
                     {% endfor %}
                 </tbody>
             </table>
