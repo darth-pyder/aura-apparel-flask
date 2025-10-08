@@ -3772,3 +3772,77 @@ body.mobile-menu-open {
     .product-cell img { max-width: 150px; margin-bottom: 10px; }
     .col-remove { justify-content: center; }
 }
+
+/* =================================================================== */
+/* ---        DEFINITIVE PRODUCT PAGE RESPONSIVE STYLES            --- */
+/* =================================================================== */
+
+/* --- 1. Base styles for the new mobile elements (hidden on desktop) --- */
+body.filters-open {
+    overflow: hidden; /* Prevent background scroll when panel is open */
+}
+
+.mobile-filter-trigger {
+    display: none; /* Hidden on desktop */
+    padding: 15px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.sidebar-header {
+    display: none; /* Hidden on desktop */
+}
+
+/* --- 2. Mobile & Tablet Breakpoint (where the magic happens) --- */
+@media (max-width: 992px) {
+    /* Change the main layout to a single column */
+    .page-layout-container {
+        display: block;
+    }
+    
+    /* Show the 'Filters' button */
+    .mobile-filter-trigger {
+        display: block;
+    }
+    .mobile-filter-trigger .btn {
+        width: 100%;
+    }
+
+    /* Transform the sidebar into a hidden, off-canvas panel */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -100%; /* Start off-screen */
+        width: 320px;
+        max-width: 90%;
+        height: 100%;
+        background-color: #fff;
+        z-index: 1200; /* Above all other content */
+        transition: left 0.3s ease-in-out;
+        overflow-y: auto; /* Allow scrolling within the panel */
+        padding: 20px;
+        box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+    }
+    
+    /* This class is toggled by JS to show the panel */
+    .sidebar.open {
+        left: 0;
+    }
+    
+    /* Style the new header inside the panel */
+    .sidebar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    .sidebar-header h4 {
+        margin: 0;
+        font-size: 1.2rem;
+    }
+    .sidebar-header .icon-btn {
+        font-size: 1.8rem;
+        color: #333;
+    }
+}

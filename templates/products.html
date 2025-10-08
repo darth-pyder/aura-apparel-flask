@@ -22,9 +22,25 @@
     </div>
 </div>
 
+<!-- THIS IS THE NEW MOBILE FILTER TRIGGER BUTTON -->
+<div class="mobile-filter-trigger">
+    <div class="container">
+        <button id="filter-trigger-btn" class="btn btn-secondary">
+            <i class="ph-fill ph-funnel-simple"></i>
+            <span>Filters</span>
+        </button>
+    </div>
+</div>
+
 <div class="page-layout-container">
-    <!-- CORRECTED Sidebar for Filters -->
-    <aside class="sidebar">
+    <!-- MODIFIED Sidebar for Filters -->
+    <aside class="sidebar" id="filters-panel">
+        <!-- NEW HEADER FOR THE MOBILE PANEL -->
+        <div class="sidebar-header">
+            <h4>Filters</h4>
+            <button id="close-filters-btn" class="icon-btn">&times;</button>
+        </div>
+
         {% if active_filters.category or active_filters.brand or active_filters.price or active_filters.rating or search_query %}
             <div class="filter-group">
                 <a href="{{ url_for('product_listing') }}" class="btn-clear-filters">Clear All Filters</a>

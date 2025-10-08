@@ -211,19 +211,41 @@ document.addEventListener('DOMContentLoaded', () => {
         }, false);
     }
 
-        // --- NEW: Mobile Navigation Toggle (V2 - Body Scroll Lock) ---
+    // --- START: CONSOLIDATED MOBILE UI LOGIC ---
+    
+    // Declare common variables once at the top
+    const bodyEl = document.body;
+
+    // --- Logic for Mobile Navigation Toggle ---
     const hamburgerBtn = document.getElementById('hamburger-btn');
     const mobileNavPanel = document.getElementById('mobile-nav-panel');
-    const bodyEl = document.body;
 
     if (hamburgerBtn && mobileNavPanel) {
         hamburgerBtn.addEventListener('click', () => {
-            // Toggle the classes on the elements
             mobileNavPanel.classList.toggle('open');
             hamburgerBtn.classList.toggle('is-active');
-            
-            // THE KEY FIX: Toggle a class on the body to prevent scrolling
-            bodyEl.classList.toggle('mobile-menu-open');
+            bodyEl.classList.toggle('mobile-menu-open'); // Use the single bodyEl
         });
     }
+
+    // --- Logic for Mobile Filters Panel Toggle ---
+    const filterTriggerBtn = document.getElementById('filter-trigger-btn');
+    const filtersPanel = document.getElementById('filters-panel');
+    const closeFiltersBtn = document.getElementById('close-filters-btn');
+
+    if (filterTriggerBtn && filtersPanel && closeFiltersBtn) {
+        // Open the panel
+        filterTriggerBtn.addEventListener('click', () => {
+            filtersPanel.classList.add('open');
+            bodyEl.classList.add('filters-open'); // Use the single bodyEl
+        });
+
+        // Close the panel
+        closeFiltersBtn.addEventListener('click', () => {
+            filtersPanel.classList.remove('open');
+            bodyEl.classList.remove('filters-open');
+        });
+    }
+
+    // --- END: CONSOLIDATED MOBILE UI LOGIC ---
 });
