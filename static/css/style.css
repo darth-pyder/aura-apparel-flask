@@ -1944,6 +1944,7 @@ html { box-sizing: border-box; }
     display: flex;
     align-items: center;
     gap: 8px;
+    justify-content: center;
 }
 .cart-size-selector label {
     font-weight: 600;
@@ -3949,10 +3950,11 @@ body.filters-open {
         gap: 15px;
         padding-bottom: 15px;
         border-bottom: 1px solid #f0f0f0;
+        justify-content: center;
     }
     .cart-table .col-product .product-cell {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: anchor-center;
         gap: 8px;
     }
     .cart-table .col-product .cart-product-image {
@@ -3975,7 +3977,7 @@ body.filters-open {
     .cart-table .col-price,
     .cart-table .col-subtotal {
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
         padding: 12px 0;
     }
